@@ -945,7 +945,7 @@
             var diagonal_walls = false;
             var render_light = false;
             var burring_depth = 4;
-            var burring_height = 0.5;
+            var burring_height = 1;
             var burring_vertical = 1;
             var capstone_ring_width = 0.5;
             var capstone_ring_depth = 0.5;
@@ -1119,28 +1119,16 @@
                         }
                     }
 
-                    var border_material = new THREE.MeshLambertMaterial({color: 0x6f4734});
-                    geometry = new THREE.BoxGeometry(this.size * sq_size + 2 * border_size, piece_height, border_size);
-
-                    var border = new THREE.Mesh(geometry, border_material);
-                    border.position.set(0, 0, startz - sq_size / 2 - border_size / 2);
-                    scene.add(border);
-
-                    border = new THREE.Mesh(geometry, border_material);
-                    border.rotateY(Math.PI);
-                    border.position.set(0, 0, this.position.endz - sq_size / 2 + border_size / 2);
-                    scene.add(border);
-
-                    geometry = new THREE.BoxGeometry(this.size * sq_size, piece_height, border_size);
-                    border = new THREE.Mesh(geometry, border_material);
-                    border.rotateY(Math.PI / 2);
-                    border.position.set(this.position.x - sq_size / 2 - border_size / 2, 0, -sq_size / 2);
-                    scene.add(border);
-
-                    border = new THREE.Mesh(geometry, border_material);
-                    border.rotateY(-Math.PI / 2);
-                    border.position.set(this.position.endx - border_size, 0, -sq_size / 2);
-                    scene.add(border);
+                    // board border.
+                    var board_tex = THREE.ImageUtils.loadTexture('images/board.png');
+                    var border_material = new THREE.MeshLambertMaterial({map: board_tex});
+                    border_material.magFilter = THREE.LinearMipMapFilter;
+                    border_material.minFilter = THREE.LinearMipMapFilter;
+                    border_material.anisotropy = renderer.getMaxAnisotropy();
+                    geometry = new constructBurredBox(this.size * sq_size + 2 * border_size, piece_height, this.size * sq_size + 2 * border_size, 6, 1.5, 0);
+                    var board = new THREE.Mesh(geometry, border_material);
+                    board.position.set(0, -0.5, -sq_size / 2);
+                    scene.add(board);
 
                     var material = new THREE.MeshLambertMaterial({color: 0xFFF5B5});
                     for (var i = 0; i < this.size; i++) {
@@ -1157,7 +1145,7 @@
                                 {size: letter_size, height: 1, font: 'helvetiker', weight: 'normal'});
                         letter = new THREE.Mesh(geometry, material);
                         letter.rotateX(-Math.PI / 2);
-                        letter.position.set(this.position.x - sq_size / 2 - border_size / 2 - letter_size / 2, sq_height / 2,
+                        letter.position.set(this.position.x - sq_size / 2 - border_size / 2 - letter_size / 2 + digit_adjustment * 2, sq_height / 2,
                                 this.position.endz - border_size - sq_size / 2 - letter_size / 2 - digit_adjustment - i * sq_size);
                         scene.add(letter);
                     }
@@ -1176,7 +1164,7 @@
                         letter = new THREE.Mesh(geometry, material);
                         letter.rotateX(-Math.PI / 2);
                         letter.rotateZ(Math.PI);
-                        letter.position.set(this.position.endx - sq_size / 2 + border_size / 2 + letter_size / 2, sq_height / 2,
+                        letter.position.set(this.position.endx - sq_size / 2 + border_size / 2 + letter_size / 2 - digit_adjustment * 2, sq_height / 2,
                                 this.position.endz - border_size - sq_size / 2 - letter_size * 1.5 - digit_adjustment - i * sq_size);
                         scene.add(letter);
                     }
