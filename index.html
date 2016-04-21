@@ -1064,6 +1064,7 @@
                     var geometry = constructBurredBox(table_width, table_height, table_depth, 5, 5, 5);
                     this.table = new THREE.Mesh(geometry, table_material);
                     this.table.position.set(0, -(table_height + sq_height) / 2, -sq_size / 2);
+                    this.table.ispassive = true;
                     scene.add(this.table);
                     if(localStorage.getItem('table')!=='true') {
                       this.table.visible = false;
@@ -1128,6 +1129,7 @@
                     geometry = new constructBurredBox(this.size * sq_size + 2 * border_size, piece_height, this.size * sq_size + 2 * border_size, 6, 1.5, 0);
                     var board = new THREE.Mesh(geometry, border_material);
                     board.position.set(0, -0.5, -sq_size / 2);
+                    board.ispassive = true;
                     scene.add(board);
 
                     var material = new THREE.MeshLambertMaterial({color: 0xFFF5B5});
@@ -1507,11 +1509,16 @@
                         return;
 
                     var intersects = raycaster.intersectObjects(scene.children);
-
+                    
                     if (intersects.length > 0) {
                         var obj = intersects[0].object;
-                        if (!obj.isboard && !obj.onsquare)
-                            return;
+                        if (obj.ispassive){
+                          this.unhighlight_sq();
+                          return;
+                        }
+                        else if (!obj.isboard && !obj.onsquare){
+                          return;
+                        }
                         if (!obj.isboard)
                             obj = obj.onsquare;
 
