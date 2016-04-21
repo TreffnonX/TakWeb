@@ -3010,18 +3010,41 @@
               {
                 for (p = 0; p < points.length - 1; ++p)
                 {
+                  // calculate normals.
+                  var dist = Math.sqrt(
+                      (points[p + 1].x - points[p].x) * (points[p + 1].x - points[p].x) +
+                      (points[p + 1].y - points[p].y) * (points[p + 1].y - points[p].y));
+                  var unrotatedNormal = [
+                      (points[p + 1].y - points[p].y) / dist,
+                      (points[p].x - points[p + 1].x) / dist,
+                      (points[p + 1].y - points[p].y) / dist
+                  ];
+                  var normals = [
+                      new THREE.Vector3(
+                          Math.cos(segmentRad * (i % segments)) * unrotatedNormal[0],
+                          unrotatedNormal[1],
+                          Math.sin(segmentRad * (i % segments)) * unrotatedNormal[2]
+                      ),
+                      new THREE.Vector3(
+                          Math.cos(segmentRad * ((i + 1) % segments)) * unrotatedNormal[0],
+                          unrotatedNormal[1],
+                          Math.sin(segmentRad * ((i + 1) % segments)) * unrotatedNormal[2]
+                      )
+                  ];
                   // create 2 faces per point (except for the last point in the spline)
                   face = new THREE.Face3(
                       i * points.length + p,
                       i * points.length + p + 1,
                       (i + 1) % segments * points.length + p
                   );
+                  face.vertexNormals = [normals[0], normals[0], normals[1]];
                   geometry.faces.push(face);
                   face = new THREE.Face3(
                       (i + 1) % segments * points.length + p,
                       i * points.length + p + 1,
                       (i + 1) % segments * points.length + p + 1
                   );
+                  face.vertexNormals = [normals[1], normals[0], normals[1]];
                   geometry.faces.push(face);
                   // add two UVS
                   geometry.faceVertexUvs[0].push([
@@ -3029,6 +3052,7 @@
                       new THREE.Vector2(i / segments, texPoints[(p + 1) % segments]),
                       new THREE.Vector2((i + 1) / segments, texPoints[p])
                   ]);
+                  
                   geometry.faceVertexUvs[0].push([
                       new THREE.Vector2((i + 1) / segments, texPoints[p]),
                       new THREE.Vector2(i / segments, texPoints[(p + 1) % segments]),
@@ -3040,7 +3064,7 @@
               // do posterior work.
               geometry.uvsNeedUpdate = true;
               geometry.computeBoundingBox();
-              geometry.computeFaceNormals();
+              //geometry.computeFaceNormals();
               geometry.center();
               return geometry;
             }
