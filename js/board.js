@@ -148,10 +148,12 @@ var board = {
         light.position.x = light_position[0];
         light.position.y = light_position[1];
         light.position.z = light_position[2];
+        light.ispassive = true;
         scene.add(light);
         var hemisphereLight = new THREE.HemisphereLight( 0xFFFFFF, 0xFFFFFF, 0.6);
         hemisphereLight.color.setHSL(0.15, 0.1, 0.7);
         hemisphereLight.groundColor.setHSL(0.1, 0.8, 1);
+        hemisphereLight.ispassive = true;
         scene.add(hemisphereLight);
     },
     addboard: function () {
@@ -180,16 +182,16 @@ var board = {
 
         for (i = 0; i < this.size; i++) {
             for (j = 0; j < this.size; j++) {
-                piece = new THREE.Mesh(geometry, ((i + j) % 2) ? white_material : black_material);
-                piece.position.set(startx + i * sq_size, 0, startz + j * sq_size);
+                square = new THREE.Mesh(geometry, ((i + j) % 2) ? white_material : black_material);
+                square.position.set(startx + i * sq_size, 0, startz + j * sq_size);
 
-                piece.file = i;//String.fromCharCode('A'.charCodeAt(0)+i);
-                piece.rank = this.size - 1 - j;
-                piece.isboard = true;
+                square.file = i;
+                square.rank = this.size - 1 - j;
+                square.isboard = true;
 
-                this.board_objects.push(piece);
-                this.sq[i][j].board_object = piece;
-                scene.add(piece);
+                this.board_objects.push(square);
+                this.sq[i][j].board_object = square;
+                scene.add(square);
             }
         }
 
@@ -214,6 +216,7 @@ var board = {
             letter.rotateX(-Math.PI / 2);
             letter.position.set(this.position.x - letter_size / 2 + i * sq_size, sq_height / 2,
                     this.position.endz - border_size / 2 - letter_size);
+            letter.ispassive = true;
             scene.add(letter);
 
             geometry = new THREE.TextGeometry(String.fromCharCode('1'.charCodeAt(0) + i),
@@ -222,6 +225,7 @@ var board = {
             letter.rotateX(-Math.PI / 2);
             letter.position.set(this.position.x - sq_size / 2 - border_size / 2 - letter_size / 2 + digit_adjustment * 2, sq_height / 2,
                     this.position.endz - border_size - sq_size / 2 - letter_size / 2 - digit_adjustment - i * sq_size);
+            letter.ispassive = true;
             scene.add(letter);
         }
         for (var i = this.size - 1; i >= 0; i--) {
@@ -232,6 +236,7 @@ var board = {
             letter.rotateY(Math.PI);
             letter.position.set(this.position.x + letter_size / 2 + i * sq_size, sq_height / 2,
                     this.position.z - sq_size / 2 - border_size / 2 - letter_size / 2);
+            letter.ispassive = true;
             scene.add(letter);
 
             geometry = new THREE.TextGeometry(String.fromCharCode('1'.charCodeAt(0) + i),
@@ -241,13 +246,13 @@ var board = {
             letter.rotateZ(Math.PI);
             letter.position.set(this.position.endx - sq_size / 2 + border_size / 2 + letter_size / 2 - digit_adjustment * 2, sq_height / 2,
                     this.position.endz - border_size - sq_size / 2 - letter_size * 1.5 - digit_adjustment - i * sq_size);
+            letter.ispassive = true;
             scene.add(letter);
         }
         this.position.x -= border_size;
         this.position.z -= border_size;
         this.position.endx += border_size;
         this.position.endz += border_size;
-
     },
     addpieces: function () {
         var white_texture = THREE.ImageUtils.loadTexture(white_piece_tex_name);
@@ -273,56 +278,75 @@ var board = {
         black_cap_material.anisotropy = 1;
 
         var piece;
+        var whitePieces = [];
+        var whiteCaps = [];
+        var blackPieces = [];
+        var blackCaps = [];
         for (i = 0; i < this.tottiles; i++) {
-            var stackno = Math.floor(i / 10);
-            var stackheight = i % 10;
-
             piece = new THREE.Mesh(white_piece_geometry, white_material);
-            piece.position.set(this.position.endx + 50, stackheight * piece_height, this.position.endz - piece_size - stackno * stack_dist);
             piece.iswhitepiece = true;
             piece.isstanding = false;
             piece.onsquare = null;
             piece.isboard = false;
             piece.iscapstone = false;
-
             this.piece_objects.push(piece);
-            scene.add(piece);
+            whitePieces.push(piece);
 
             piece = new THREE.Mesh(black_piece_geometry, black_material);
-            piece.position.set(this.position.x - 50 - piece_size, stackheight * piece_height, this.position.z + stackno * stack_dist);
             piece.iswhitepiece = false;
             piece.isstanding = false;
             piece.onsquare = null;
             piece.isboard = false;
             piece.iscapstone = false;
-
             this.piece_objects.push(piece);
-            scene.add(piece);
+            blackPieces.push(piece);
         }
         for (i = 0; i < this.totcaps; i++) {
-            var stackno = Math.ceil(this.tottiles / 10) + i;
             piece = new THREE.Mesh(white_caps_geometry, white_cap_material);
-            piece.position.set(this.position.endx + 50, (capstone_height - sq_height) / 2, this.position.endz - piece_size - stackno * stack_dist);
             piece.iswhitepiece = true;
             piece.isstanding = true;
             piece.onsquare = null;
             piece.isboard = false;
             piece.iscapstone = true;
-
             this.piece_objects.push(piece);
-            scene.add(piece);
+            whiteCaps.push(piece);
 
             piece = new THREE.Mesh(black_caps_geometry, black_cap_material);
-            piece.position.set(this.position.x - 50 - piece_size, (capstone_height - sq_height) / 2, this.position.z + stackno * stack_dist);
             piece.iswhitepiece = false;
             piece.isstanding = true;
             piece.onsquare = null;
             piece.isboard = false;
             piece.iscapstone = true;
-
             this.piece_objects.push(piece);
-            scene.add(piece);
+            blackCaps.push(piece);
         }
+        this.arrangepieces(whitePieces, whiteCaps, blackPieces, blackCaps);
+    },
+    arrangepieces: function(whitePieces, whiteCaps, blackPieces, blackCaps) {
+      var piece;
+      for (i = 0; i < this.tottiles; i++) {
+        var stackno = Math.floor(i / 10);
+        var stackheight = i % 10;
+        piece = whitePieces.pop();
+        piece.position.set(this.position.endx + 50, stackheight * piece_height,
+            this.position.endz - piece_size - stackno * stack_dist);
+        scene.add(piece);
+        piece = blackPieces.pop();
+        piece.position.set(this.position.x - 50 - piece_size, stackheight * piece_height,
+            this.position.z + stackno * stack_dist);
+        scene.add(piece);
+      }
+      for (i = 0; i < this.totcaps; i++) {
+        var stackno = Math.ceil(this.tottiles / 10) + i;
+        piece = whiteCaps.pop();
+        piece.position.set(this.position.endx + 50, (capstone_height - sq_height) / 2,
+            this.position.endz - piece_size - stackno * stack_dist);
+        scene.add(piece);
+        piece = blackCaps.pop();
+        piece.position.set(this.position.x - 50 - piece_size, (capstone_height - sq_height) / 2,
+            this.position.z + stackno * stack_dist);
+        scene.add(piece);
+      }
     },
     updateboard: function () {
         // reload textures.
@@ -676,17 +700,19 @@ var board = {
             return;
         server.send("Game#" + this.gameno + " " + e);
     },
-    getfromstack: function (cap, iswhite) {
+    getfromstack: function (iscap, iswhite) {
         //randomly get any piece
         for (i = this.piece_objects.length-1; i >= 0; i--) {
-            var obj = this.piece_objects[i];
-            if (!obj.onsquare && (obj.iswhitepiece === iswhite)) {
-                if (cap === obj.iscapstone) {
-                  return obj;
-                }
+            var piece = this.piece_objects[i];
+            if (!piece.onsquare
+                && piece.iswhitepiece === iswhite
+                && piece.iscapstone === iscap) {
+              return piece;
             }
         }
-        return null;
+        throw "The required piece was not available: "
+            + (iswhite ? "white" : "black") + ":"
+            + (iscap ? "capstone" : "tile");
     },
     //move the server sends
     serverPmove: function (file, rank, caporwall) {
@@ -1044,7 +1070,7 @@ var board = {
             this.standup(piece);
     },
     flatten: function (piece) {
-        if (!piece.isstanding)
+        if (!piece.isstanding || piece.iscapstone)
             return;
         piece.position.y -= piece_size / 2 - piece_height / 2;
         if (diagonal_walls)
@@ -1105,28 +1131,66 @@ var board = {
     },
     //bring pieces to original positions
     resetpieces: function() {
-        for (var i = scene.children.length - 1; i >= 0; i--) {
-            scene.remove(scene.children[i]);
-        }
-
-        this.sq = [];
-        this.board_objects = [];
-        this.piece_objects = [];
         this.highlighted = null;
         this.selected = null;
         this.selectedStack = null;
         this.move = {start: null, end: null, dir: 'U', squares: []};
 
         //reset stacks
+        var piece;
+        var whitePieces = [];
+        var whiteCaps = [];
+        var blackPieces = [];
+        var blackCaps = [];
+        while (piece = this.piece_objects.pop())
+        {
+          this.flatten(piece);
+          if (piece.iswhitepiece) {
+            if (piece.iscapstone)
+              whiteCaps.push(piece);
+            else
+              whitePieces.push(piece);
+          }
+          else {
+            if (piece.iscapstone)
+              blackCaps.push(piece);
+            else
+              blackPieces.push(piece);
+          }
+        }
         for (var i = 0; i < this.size; i++) {
-            this.sq[i] = [];
             for (var j = 0; j < this.size; j++) {
-                this.sq[i][j] = [];
+                while (piece = this.sq[i][j].pop()) {
+                    piece.onsquare = false;
+                    this.flatten(piece);
+                    if (piece.iswhitepiece) {
+                      if (piece.iscapstone)
+                        whiteCaps.push(piece);
+                      else
+                        whitePieces.push(piece);
+                    }
+                    else {
+                      if (piece.iscapstone)
+                        blackCaps.push(piece);
+                      else
+                        blackPieces.push(piece);
+                    }
+                }
             }
         }
-
-        this.addboard();
-        this.addpieces();
+        for (var i = 0; i < whitePieces.length; ++i) {
+          this.piece_objects.push(whitePieces[i]);
+        }
+        for (var i = 0; i < blackPieces.length; ++i) {
+          this.piece_objects.push(blackPieces[i]);
+        }
+        for (var i = 0; i < whiteCaps.length; ++i) {
+          this.piece_objects.push(whiteCaps[i]);
+        }
+        for (var i = 0; i < blackCaps.length; ++i) {
+          this.piece_objects.push(blackCaps[i]);
+        }
+        this.arrangepieces(whitePieces, whiteCaps, blackPieces, blackCaps);
     },
     showmove: function(no) {
       if(this.movecount <= 0 || no>this.movecount || no<=0 || this.moveshown === no)
