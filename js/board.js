@@ -513,6 +513,11 @@ var board = {
               this.standup(pc);
 
             this.push(sq, pc);
+            
+            if(iswhite)
+              this.whitepiecesleft--;
+            else
+              this.blackpiecesleft--;
           }
         }
       }
@@ -1135,6 +1140,9 @@ var board = {
         this.selected = null;
         this.selectedStack = null;
         this.move = {start: null, end: null, dir: 'U', squares: []};
+        this.whitepiecesleft = this.tottiles + this.totcaps;
+        this.blackpiecesleft = this.tottiles + this.totcaps;
+
 
         //reset stacks
         var piece;
