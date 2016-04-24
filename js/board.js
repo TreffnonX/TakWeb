@@ -327,22 +327,22 @@ var board = {
       for (i = 0; i < this.tottiles; i++) {
         var stackno = Math.floor(i / 10);
         var stackheight = i % 10;
-        piece = whitePieces.pop();
+        piece = whitePieces[i];
         piece.position.set(this.position.endx + 50, stackheight * piece_height,
             this.position.endz - piece_size - stackno * stack_dist);
         scene.add(piece);
-        piece = blackPieces.pop();
+        piece = blackPieces[i];
         piece.position.set(this.position.x - 50 - piece_size, stackheight * piece_height,
             this.position.z + stackno * stack_dist);
         scene.add(piece);
       }
       for (i = 0; i < this.totcaps; i++) {
         var stackno = Math.ceil(this.tottiles / 10) + i;
-        piece = whiteCaps.pop();
+        piece = whiteCaps[i];
         piece.position.set(this.position.endx + 50, (capstone_height - sq_height) / 2,
             this.position.endz - piece_size - stackno * stack_dist);
         scene.add(piece);
-        piece = blackCaps.pop();
+        piece = blackCaps[i];
         piece.position.set(this.position.x - 50 - piece_size, (capstone_height - sq_height) / 2,
             this.position.z + stackno * stack_dist);
         scene.add(piece);
@@ -1144,6 +1144,8 @@ var board = {
         var blackCaps = [];
         while (piece = this.piece_objects.pop())
         {
+          if (piece.onsquare)
+            continue;
           this.flatten(piece);
           if (piece.iswhitepiece) {
             if (piece.iscapstone)
