@@ -59,7 +59,7 @@ function init() {
     renderer.setPixelRatio(window.devicePixelRatio);
     //renderer.setSize( window.innerWidth, window.innerHeight );
     //renderer.setSize( 800, 640);
-    renderer.setClearColor(0xdddddd, 1);
+    renderer.setClearColor(0x111111, 1);
 
     document.body.appendChild(renderer.domElement);
 
@@ -141,6 +141,9 @@ function onDocumentMouseDown(e) {
     var y = e.clientY - canvas.offsetTop;
     mouse.x = (x / canvas.width) * 2 - 1;
     mouse.y = -(y / canvas.height) * 2 + 1;
+
+    if(board.movecount !== board.moveshown)
+        return;
 
     if (e.button === 2)
         board.rightclick();
@@ -242,4 +245,70 @@ function hidechat() {
 }
 function isBreakpoint( alias ) {
     return $('.device-' + alias).is(':hidden');
+}
+function getHeader(key, val) {
+  return '['+key+' "'+val+'"]\r\n';
+}
+function downloadNotation() {
+  var p1 = $('.player1-name:first').html();
+  var p2 = $('.player2-name:first').html();
+  var now = new Date();
+  var dt = (now.getYear()-100)+'.'+now.getMonth()+'.'+now.getDate()+' '+now.getHours()+'.'+getZero(now.getMinutes());
+
+  $('#download_notation').attr('download', p1+' vs '+p2+' '+dt+'.ptn');
+
+  var res='';
+  res += getHeader('Site', 'PlayTak.com');
+  res += getHeader('Date', '20'+(now.getYear()-100)+'.'+now.getMonth()+'.'+now.getDate());
+  res += getHeader('Player1', p1);
+  res += getHeader('Player2', p2);
+  res += getHeader('Size', board.size);
+  res += getHeader('Result', board.result);
+  res += '\r\n';
+
+  var count=1;
+
+  $('#moveslist tr').each(function() {
+    $('td', this).each(function() {
+      var val = $(this).text();
+      res += val;
+
+      if(count%3 === 0)
+        res += '\r\n';
+      else
+        res += ' ';
+
+      count++;
+    })
+  });
+  $('#download_notation').attr('href', 'data:text/plain;charset=utf-8,'+encodeURIComponent(res));
+  console.log('res='+res);
+}
+
+function showPrivacyPolicy() {
+    $('#help-modal').modal('hide');
+    $('#privacy-modal').modal('show');
+}
+
+function undoButton() {
+  if(board.scratch)
+    board.undo();
+  else
+    server.undo();
+}
+
+function fastrewind() {
+  board.showmove(1);
+}
+
+function stepback() {
+  board.showmove(board.moveshown-1);
+}
+
+function stepforward() {
+  board.showmove(board.moveshown+1);
+}
+
+function fastforward() {
+  board.showmove(board.movecount);
 }

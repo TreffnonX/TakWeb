@@ -157,10 +157,15 @@
                     </div>
                     <div id="player-opp-time" class="player1-time">0:00</div>
                 </li>
-                <li class="center">
-                    <!--<a href="#" title="Reverse board" onclick="board.reverseboard(true)"><img src="images/ic_screen_rotation_black_24px.svg" width="25 height=25"></a>-->
-                    <a href="#" title="Offer/Accept draw" class="btn" onclick="server.draw()"><img id="draw" src="images/offer-hand.png" width="25" height="25"></a>
-                    <a href="#" title="Resign" class="btn" onclick="server.resign()"><img src="images/flag.svg" width="25" height="20"></a>
+                <li class="optlist center">
+                <a id="download_notation" href="#" title="Download notation" class="btn" onclick="downloadNotation();">
+                  <img src="images/ic_file_download_black_24px.svg" width="25" height="25"></a>
+                <a href="#" title="Undo" class="btn" onclick="undoButton()">
+                  <img id="undo" src="images/requestundo.svg" width="25" height="25"></a>
+                <a href="#" title="Offer/Accept draw" class="btn" onclick="server.draw()">
+                  <img id="draw" src="images/offer-hand.png" width="25" height="25"></a>
+                <a href="#" title="Resign" class="btn" onclick="server.resign()">
+                  <img src="images/flag.svg" width="25" height="20"></a>
                 </li>
                 <li>
                     <div title="Notation for current game appears here" id="notationbar">
@@ -168,6 +173,16 @@
                         <table id="moveslist">
                         </table>
                     </div>
+                </li>
+                <li class="optlist center">
+                <a href="#" title="First move" class="btn" onclick="fastrewind()">
+                  <img src="images/ic_fast_rewind_black_24px.svg" width="25" height="25"></a>
+                <a href="#" title="Step back" class="btn" onclick="stepback()">
+                  <img src="images/ic_keyboard_arrow_left_black_24px.svg" width="25" height="25"></a>
+                <a href="#" title="Step forward" class="btn" onclick="stepforward()">
+                  <img src="images/ic_keyboard_arrow_right_black_24px.svg" width="25" height="25"></a>
+                <a href="#" title="Current move" class="btn" onclick="fastforward()">
+                  <img src="images/ic_fast_forward_black_24px.svg" width="25" height="25"></a>
                 </li>
                 <li class="center">
                     <div id="player-me">
@@ -539,6 +554,26 @@
             </div>
         </div>
 
+        <div id="privacy-modal" class="modal fade">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Privacy Policy</h4>
+                    </div>
+                    <div class="modal-body">
+                        <ul>
+                          <li>All online games played after <b>23 April 5:00 PM GMT</b> will be released into public domain</li>
+                          <li>Player names will be released along with the game notation and player stats</li>
+                          <li>Games played before that time will be stripped off of player names and released</li>
+                          <li>Only email addresses and passwords will remain private on the server</li>
+                          <li>This policy is adopted in the hopes that people and AIs can study games and improve Tak</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <div id="help-modal" class="modal fade">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
@@ -548,6 +583,7 @@
                     </div>
                     <div class="modal-body">
                         <ul>
+                            <li><ul> <a href="#" onclick="showPrivacyPolicy();"> Privacy Policy</a><br> </li></ul>
                             <li><ul> Rules - the short version:
                                     <li>White goes first</li>
                                     <li>On first move, each player must place his opponent's tile</li>
@@ -577,7 +613,7 @@
                             <li><ul>About the game:
                                     <li>Rules for TAK are made by <a target="_blank" href="https://en.wikipedia.org/wiki/James_Ernest">James Ernest</a> and <a target="_blank" href="https://en.wikipedia.org/wiki/Patrick_Rothfuss">Patrick Rothfuss</a>. Visit <a target="_blank" href="http://cheapass.com/games/tak">cheapass.com</a> for more info</li>
                                     <li>Back the <b><a target="_blank" href="https://www.kickstarter.com/projects/cheapassgames/tak-a-beautiful-game">Tak Kickstarter!</a></b></li>
-                                    <li>This is an unofficial implementation by <a target="_blank" href="https://github.com/chaitu236">Chaitanya Vadrevu (me)</a></li>
+                                    <li>This is an unofficial implementation by <a target="_blank" href="https://github.com/chaitu236">Chaitanya Vadrevu</a> with the help of other volunteers</li>
                                     <li>Front end code can be found <a target="_blank" href="https://github.com/chaitu236/TakWeb">here</a>,
                                     backend code <a target="_blank" href="https://github.com/chaitu236/TakServer">here</a></li>
                                     <li>Check out <a target="_blank" href="https://www.reddit.com/r/KingkillerChronicle/">these </a>
@@ -623,6 +659,7 @@
               $('#chat').offset({ top: $('nav').height() + 5 });
               $('#chat-toggle-button').offset({ top: $('nav').height() + 7 });
 
+              $('#chat-server').append('<a href="#" onclick="showPrivacyPolicy();"> Privacy Policy</a><br>');
               tour(false);
           })
         </script>

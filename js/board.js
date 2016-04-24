@@ -44,6 +44,7 @@ var board = {
     blackpiecesleft: 0,
     mycolor: "white",
     movecount: 0,
+    moveshown: 0,
     scratch: true,
     table: null,
     sq: [],
@@ -58,9 +59,11 @@ var board = {
     server: null,
     gameno: 0,
     boardside: "white",
-    result: "none",
+    result: "",
     observing: false,
     position: {x: 0, y: 0, endx: 0, endz: 0},
+    board_history: [],
+    timer_started: false,
     init: function (sz, col, scr, obs) {
         this.size = sz;
 
@@ -89,6 +92,7 @@ var board = {
         this.mycolor = col;
         this.sq = [];
         this.movecount = 0;
+        this.moveshown = 0;
         this.scratch = scr;
         this.board_objects = [];
         this.piece_objects = [];
@@ -97,24 +101,26 @@ var board = {
         this.selectedStack = null;
         this.gameno = 0;
         this.move = {start: null, end: null, dir: 'U', squares: []};
-        this.result = "none";
+        this.result = "";
         this.observing = typeof obs !== 'undefined' ? obs : false;
         this.ismymove = this.checkifmymove();
+        this.board_history = [];
+        this.timer_started = false;
 
-        for (i = 0; i < this.size; i++) {
+        var bp = [];
+        for (var i = 0; i < this.size; i++) {
             this.sq[i] = [];
-            for (j = 0; j < this.size; j++) {
+            for (var j = 0; j < this.size; j++) {
                 this.sq[i][j] = [];
+                bp.push([]);
             }
         }
+        this.board_history.push(bp);
         
         this.addtable();
         this.addlight()
         this.addboard();
         this.addpieces();
-
-        var material = new THREE.LineBasicMaterial({color: 0x0000f0});
-        var pyramid = new THREE.CylinderGeometry(0, 50, 50, 3, false);
 
         document.getElementById("player-opp").className = "selectplayer";
         document.getElementById("player-me").className = "";
@@ -415,15 +421,17 @@ var board = {
         return this.sq[file][this.size - 1 - rank].board_object;
     },
     incmovecnt: function () {
+        this.save_board_pos();
+        if(this.moveshown === this.movecount) {
+          this.moveshown++;
+          $('.curmove:first').removeClass('curmove');
+          $('.moveno'+this.movecount+':first').addClass('curmove');
+        }
         this.movecount++;
         document.getElementById("move-sound").play();
 
         $('#player-me').toggleClass('selectplayer');
         $('#player-opp').toggleClass('selectplayer');
-        /*v1 = document.getElementById("player-opp");
-        v1.className = (v1.className === "") ? "selectplayer" : "";
-        v2 = document.getElementById("player-me");
-        v2.className = (v2.className === "") ? "selectplayer" : "";*/
 
         if (this.scratch) {
             if (this.mycolor === "white")
@@ -433,6 +441,57 @@ var board = {
         }
 
         this.ismymove = this.checkifmymove();
+        $('#undo').attr('src', 'images/requestundo.svg');
+    },
+    save_board_pos: function() {
+      var bp = [];
+      //for all squares, convert stack info to board position info
+      for(var i=0;i<this.size;i++) {
+        for(var j=0;j<this.size;j++) {
+          var bp_sq = [];
+          var stk = this.sq[i][j];
+
+          //if(stk.length===0)
+          //  bp_sq.push('.');
+          for(var s=0;s<stk.length;s++) {
+            var pc = stk[s];
+            var c = 'p';
+            if(pc.iscapstone)
+              c = 'c';
+            else if (pc.isstanding)
+              c = 'w';
+
+            if(pc.iswhitepiece)
+              c = c.charAt(0).toUpperCase();
+
+            bp_sq.push(c);
+          }
+          bp.push(bp_sq);
+        }
+      }
+      this.board_history.push(bp);
+    },
+    //pos is a single dim. array of size*size containing arrays of piece types
+    apply_board_pos: function(pos) {
+      for(var i=0;i<this.size;i++) {//file
+        for(var j=0;j<this.size;j++) {//rank
+          var sq = this.get_board_obj(i, j);
+          var sqpos = pos[i*this.size + j];
+
+          for(var s=0;s<sqpos.length;s++) {
+            var pc = sqpos[s];
+            var iscap = (pc==='c' || pc==='C');
+            var iswall = (pc==='w' || pc==='W');
+            var iswhite = (pc===pc.charAt(0).toUpperCase());
+
+            var pc = this.getfromstack(iscap, iswhite);
+            if(iswall)
+              this.standup(pc);
+
+            this.push(sq, pc);
+          }
+        }
+      }
     },
     leftclick: function () {
         this.remove_total_highlight();
@@ -631,6 +690,7 @@ var board = {
     },
     //move the server sends
     serverPmove: function (file, rank, caporwall) {
+        fastforward();
         var obj = this.getfromstack((caporwall === 'C'), this.is_white_piece_to_move());
 
         if (!obj) {
@@ -650,6 +710,7 @@ var board = {
     },
     //Move move the server sends
     serverMmove: function (f1, r1, f2, r2, nums) {
+        fastforward();
         var s1 = this.get_board_obj(f1.charCodeAt(0) - 'A'.charCodeAt(0), r1 - 1);
         var fi = 0, ri = 0;
         if (f1 === f2)
@@ -850,10 +911,27 @@ var board = {
         }
     },
     notate: function (txt) {
+        var res=false;
+        if(txt==='R-0'||txt==='0-R'||txt==='F=0'||txt==='0-F'
+                ||txt==='1-0'||txt==='0-1'||txt==='1/2-1/2') {
+            var ol = document.getElementById("moveslist");
+            var row = ol.insertRow();
+            var cell0 = row.insertCell(0);
+            cell0.innerHTML = '';
+
+            var cell1 = row.insertCell(1);
+            row.insertCell(2);
+            cell1.innerHTML = txt;
+
+            $('#notationbar').scrollTop($('#moveslist tr:last').position().top);
+            return;
+        }
         if (this.movecount !== 0 && this.movecount % 2 === 1) {
             var om = document.getElementById("moveslist");
             var col = om.rows[om.rows.length - 1].cells[2];
-            col.innerHTML = txt;
+            col.innerHTML = '<a href="#" onclick="board.showmove('
+                + (this.movecount+1) + ');"><span class=moveno'
+                + this.movecount + '>' + txt + '</span></a>';
         } else {
             var ol = document.getElementById("moveslist");
             var row = ol.insertRow();
@@ -861,7 +939,9 @@ var board = {
             cell0.innerHTML = Math.floor(this.movecount / 2 + 1) + '.';
             var cell1 = row.insertCell(1);
             row.insertCell(2);
-            cell1.innerHTML = txt;
+            cell1.innerHTML = '<a href="#" onclick="board.showmove('
+                + (this.movecount+1) + ');"><span class=moveno'
+                + this.movecount + '>' + txt + '</span></a>';
         }
         $('#notationbar').scrollTop($('#moveslist tr:last').position().top);
     },
@@ -1023,6 +1103,82 @@ var board = {
         console.log('right up');
         this.remove_total_highlight();
     },
+    //bring pieces to original positions
+    resetpieces: function() {
+        for (var i = scene.children.length - 1; i >= 0; i--) {
+            scene.remove(scene.children[i]);
+        }
+
+        this.sq = [];
+        this.board_objects = [];
+        this.piece_objects = [];
+        this.highlighted = null;
+        this.selected = null;
+        this.selectedStack = null;
+        this.move = {start: null, end: null, dir: 'U', squares: []};
+
+        //reset stacks
+        for (var i = 0; i < this.size; i++) {
+            this.sq[i] = [];
+            for (var j = 0; j < this.size; j++) {
+                this.sq[i][j] = [];
+            }
+        }
+
+        this.addboard();
+        this.addpieces();
+    },
+    showmove: function(no) {
+      if(this.movecount <= 0 || no>this.movecount || no<=0 || this.moveshown === no)
+          return;
+
+      console.log('showmove '+no);
+      this.moveshown = no;
+      this.resetpieces();
+      this.apply_board_pos(this.board_history[no]);
+      $('.curmove:first').removeClass('curmove');
+      $('.moveno'+(no-1)+':first').addClass('curmove');
+    },
+    undo: function() {
+      if(this.movecount <= 0)
+        return;
+
+      this.resetpieces();
+      this.apply_board_pos(this.board_history[this.movecount-1]);
+      this.board_history.pop();
+      this.movecount--;
+      this.moveshown = this.movecount;
+
+      $('#player-me').toggleClass('selectplayer');
+      $('#player-opp').toggleClass('selectplayer');
+
+      if (this.scratch) {
+          if (this.mycolor === "white")
+              this.mycolor = "black";
+          else
+              this.mycolor = "white";
+      }
+      this.ismymove = this.checkifmymove();
+
+      //fix notation
+      var ml = document.getElementById("moveslist");
+      var lr = ml.rows[ml.rows.length - 1];
+      var txt = lr.cells[1].innerHTML;
+      if(txt==='R-0'||txt==='0-R'||txt==='F=0'||txt==='0-F'||txt==='1-0'||txt==='0-1'||txt==='1/2-1/2') {
+        ml.deleteRow(ml.rows.length - 1);
+        lr = ml.rows[ml.rows.length - 1];
+      }
+
+      if(this.movecount % 2 == 0) {
+          ml.deleteRow(ml.rows.length - 1);
+      } else {
+          lr.cells[2].innerHTML="";
+      }
+
+      $('.curmove:first').removeClass('curmove');
+      $('.moveno'+(this.movecount-1)+':first').addClass('curmove');
+    },
+    //remove all scene objects, reset player names, stop time, etc
     clear: function () {
         for (var i = scene.children.length - 1; i >= 0; i--) {
             scene.remove(scene.children[i]);

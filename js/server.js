@@ -203,18 +203,17 @@ var server = {
             op.innerHTML = Number(op.innerHTML)-1;
         }
         else if (e.startsWith("Game#")) {
+          var spl = e.split(" ");
           var gameno = Number(e.split("Game#")[1].split(" ")[0]);
           console.log("game no "+gameno+" "+board.gameno);
           //Game#1 ...
           if(gameno === board.gameno) {
             //Game#1 P A4 (C|W)
-            if (e.indexOf(" P ") > -1) {
-                var spl = e.split(" ");
+            if (spl[1] === "P") {
                 board.serverPmove(spl[2].charAt(0), Number(spl[2].charAt(1)), spl[3]);
             }
             //Game#1 M A2 A5 2 1
-            else if (e.indexOf(" M ") > -1) {
-                var spl = e.split(" ");
+            else if (spl[1] === "M") {
                 var nums = [];
                 for (i = 4; i < spl.length; i++)
                     nums.push(Number(spl[i]));
@@ -223,8 +222,7 @@ var server = {
                         nums);
             }
             //Game#1 Time 170 200
-            else if (e.indexOf(" Time ") > -1) {
-              var spl = e.split(" ");
+            else if (spl[1] === "Time") {
               var wt = Number(spl[2]);
               var bt = Number(spl[3]);
               lastWt = wt;
@@ -237,25 +235,43 @@ var server = {
               $('.player1-time:first').html(parseInt(wt/60)+':'+getZero(wt%60));
               $('.player2-time:first').html(parseInt(bt/60)+':'+getZero(bt%60));
 
-              if(board.movecount > 0) {
+              if(!board.timer_started) {
+                board.timer_started = true;
                 startTime(true);
               }
             }
+            //Game#1 RequestUndo
+            else if (spl[1] === "RequestUndo") {
+              alert("info", "Your opponent requests to undo the last move");
+              $('#undo').attr('src', 'images/otherrequestedundo.svg');
+            }
+            //Game#1 RemoveUndo
+            else if (spl[1] === "RemoveUndo") {
+              alert("info", "Your opponent removes undo request");
+              $('#undo').attr('src', 'images/requestundo.svg');
+            }
+            //Game#1 Undo
+            else if (spl[1] === "Undo") {
+              board.undo();
+              alert("info", "Game has been UNDOed by 1 move");
+              $('#undo').attr('src', 'images/requestundo.svg');
+            }
             //Game#1 OfferDraw
-            else if (e.indexOf("OfferDraw") > -1) {
+            else if (spl[1] === "OfferDraw") {
                 document.getElementById("draw").src = "images/hand-other-offered.png";
                 alert("info", "Draw is offered by your opponent");
             }
             //Game#1 RemoveDraw
-            else if (e.indexOf("RemoveDraw") > -1) {
+            else if (spl[1] === "RemoveDraw") {
                 document.getElementById("draw").src = "images/offer-hand.png";
                 alert("info", "Draw offer is taken back by your opponent");
             }
             //Game#1 Over result
-            else if (e.indexOf("Over") > -1) {
+            else if (spl[1] === "Over") {
                 document.title = "Tak";
                 var spl = e.split(" ");
                 board.scratch = true;
+                board.result = spl[2];
                 board.notate(spl[2]);
 
                 var msg = "Game over <span class='bold'>" + spl[2] + "</span><br>";
@@ -267,7 +283,7 @@ var server = {
                 else if (spl[2] === "F-0" || spl[2] === "0-F")
                   type = "having more flats";
                 else if (spl[2] === "1-0" || spl[2] === "0-1")
-                  type = "resignation";
+                  type = "resignation or time";
 
                 if(spl[2] === "R-0" || spl[2] === "F-0" || spl[2] === "1-0") {
                   if(board.observing === true) {
@@ -291,30 +307,32 @@ var server = {
                   }
                 }
 
-                alert("info", msg);
                 document.getElementById("scratchsize").disabled = false;
                 stopTime();
 
                 $('#gameoveralert-text').html(msg);
                 $('#gameoveralert').modal('show');
             }
-            //Abandoned
-            else if (e.indexOf("Abandoned") > -1) {
+            //Game#1 Abandoned
+            else if (spl[1] === "Abandoned.") {
                 //Game#1 Abandoned. name quit
                 var spl = e.split(" ");
                 document.title = "Tak";
                 board.scratch = true;
 
-                if(board.mycolor === "white")
+                if(board.mycolor === "white"){
                   board.notate("1-0");
-                else
+                  board.result = "1-0";
+                }
+                else {
                   board.notate("0-1");
+                  board.result = "0-1";
+                }
 
                 var msg = "Game abandoned by " + spl[2] + ".";
                 if(!board.observing)
                   msg += " You win!";
 
-                alert("info", msg);
                 document.getElementById("scratchsize").disabled = false;
                 stopTime();
 
@@ -528,6 +546,25 @@ var server = {
         } else {//accept the offer
             this.send("Game#" + board.gameno + " OfferDraw");
         }
+    },
+    undo: function() {
+      if(board.observing)
+        return;
+
+      var img = document.getElementById("undo");
+      if(img.src.match('requestundo')) {//request undo
+        this.send("Game#" + board.gameno + " RequestUndo");
+        img.src = 'images/irequestedundo.svg';
+        alert('info', 'Undo request sent');
+
+      } else if (img.src.match('otherrequestedundo')) {//accept request
+        this.send("Game#" + board.gameno + " RequestUndo");
+
+      } else if (img.src.match('irequestedundo')) {//remove request
+        this.send("Game#" + board.gameno + " RemoveUndo");
+        img.src = 'images/requestundo.svg';
+        alert('info', 'Undo request removed');
+      }
     },
     resign: function() {
         if(board.scratch)
