@@ -48,7 +48,8 @@ body {
   font-weight: bold;
 }
 .chatmyname {
-  color: red;
+  font-weight: bold;
+  color: #ff9955;
 }
 .playername {
   font-weight: bold;

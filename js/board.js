@@ -1251,6 +1251,7 @@ var board = {
 
       $('.curmove:first').removeClass('curmove');
       $('.moveno'+(this.movecount-1)+':first').addClass('curmove');
+      $('#notationbar').scrollTop($('#moveslist tr:last').position().top);
     },
     //remove all scene objects, reset player names, stop time, etc
     clear: function () {
