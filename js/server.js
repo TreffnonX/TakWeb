@@ -461,6 +461,14 @@ var server = {
             $cs.append('<span class="cmdreply">'+msg+'</span><br>');
             $cs.scrollTop($cs[0].scrollHeight);
         }
+        //mark field.
+        else if (e.startsWith("Mark")) {
+            board.mark(e.split()[1].trim());
+        }
+        //unmark field.
+        else if (e.startsWith("Unmark")) {
+            board.unmark(e.split()[1].trim());
+        }
         //new seek
         else if (e.startsWith("Seek new")) {
             //Seek new 1 chaitu 5 180
@@ -573,6 +581,12 @@ var server = {
           return;
 
         this.send("Game#" + board.gameno + " Resign");
+    },
+    mark: function(field) {
+        this.send("Game#" + board.gameno + " Mark " + field);
+    },
+    unmark: function(field) {
+        this.send("Game#" + board.gameno + " Unmark " + field);
     },
     acceptseek: function (e) {
         this.send("Accept " + e);

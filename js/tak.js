@@ -148,7 +148,7 @@ function onDocumentMouseDown(e) {
     if (e.button === 2)
         board.rightclick();
     else
-        board.leftclick();
+        board.leftclick(e);
 }
 function onDocumentMouseUp(e) {
     if (e.button === 2)

@@ -210,7 +210,7 @@ input[type=range]::-webkit-slider-runnable-track {
     background-color: #e7e7e7;
 }
 #notationbar {
-    height: 150px;
+    height: 300px;
     overflow: auto;
 }
 #alertbox {
@@ -234,31 +234,31 @@ input[type=range]::-webkit-slider-runnable-track {
   color: inherit;
   text-decoration: none;
 }
+#moveslist tbody tr {
+  height: 20px;
+}
 #moveslist tbody tr td + td {
   display: inline-block;
-  height: 100%;
-  width: 40%;
+  width: 42%;
 }
 #moveslist tbody tr td {
   display: inline-block;
-  height: 100%;
-  width: 20%;
+  width: 15%;
 }
 #moveslist tbody tr td a {
   display: block;
-  height: 100%;
   width: 100%;
 }
 #moveslist tbody tr td a span {
   display: block;
-  height: 100%;
+  padding-left: 3px;
   width: 100%;
 }
 #moveslist tbody tr td a span:hover {
   background-color: #aaaaaa;
 }
 .curmove {
-  background-color: #bbbbee;
+  background-color: #e1c99a;
 }
 .center {
     text-align: center;

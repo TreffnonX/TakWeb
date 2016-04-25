@@ -28,6 +28,9 @@ function constructGeometries()
     black_piece_geometry = new THREE.BoxGeometry(piece_size, piece_height, piece_size);
     black_caps_geometry = new THREE.CylinderGeometry(capstone_radius, capstone_radius, capstone_height, 32);
   }
+  
+  marker_geometry = new THREE.BoxGeometry(sq_size, sq_height + 4, sq_size);
+  marker_geometry.center();
 }
 
 /*

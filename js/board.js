@@ -28,6 +28,8 @@ var white_piece_geometry;
 var black_piece_geometry;
 var white_caps_geometry;
 var black_caps_geometry;
+var marker_geometry;
+var marker_material = new THREE.LineBasicMaterial({color: 0xff0000, transparent: true, opacity: 0.5});
 var white_square_tex_name = 'images/board/white_simple.png';
 var black_square_tex_name = 'images/board/black_simple.png';
 var white_piece_tex_name = 'images/pieces/white_simple_pieces.png';
@@ -191,6 +193,7 @@ var board = {
 
                 this.board_objects.push(square);
                 this.sq[i][j].board_object = square;
+                this.sq[i][j].ismarked = false;
                 scene.add(square);
             }
         }
@@ -522,7 +525,33 @@ var board = {
         }
       }
     },
-    leftclick: function () {
+    leftclick: function (e) {
+        if (e.shiftKey) {
+            raycaster.setFromCamera(mouse, camera);
+            var intersects = raycaster.intersectObjects(scene.children);
+            var firstBoardSquare;
+            for (var i = 0; i < intersects.length; ++i) {
+              if (intersects[i].object.isboard) {
+                firstBoardSquare = intersects[i].object;
+                break;
+              }
+            }
+            if (firstBoardSquare === null)
+              return;
+            
+            var file = firstBoardSquare.file;
+            var rank = firstBoardSquare.rank;
+            var field = String.fromCharCode(file + 'a'.charCodeAt()) + (rank + 1);
+            if (this.sq[file][this.size - 1 - rank].ismarked) {
+              this.unmark(field);
+              server.unmark(field);
+            }
+            else {
+              this.mark(field);
+              server.mark(field);
+            }
+            return;
+        }
         this.remove_total_highlight();
         if (!this.ismymove) {
             return;
@@ -666,7 +695,14 @@ var board = {
         var intersects = raycaster.intersectObjects(scene.children);
         
         if (intersects.length > 0) {
-            var obj = intersects[0].object;
+            var obj;
+            for (var i = 0; i < intersects.length; ++i) {
+              if (!intersects[i].object.ismarker) {
+                obj = intersects[i].object;
+                break;
+              }
+            }
+
             if (obj.ispassive){
               this.unhighlight_sq();
               return;
@@ -1379,6 +1415,29 @@ var board = {
             this.highlighted = null;
             scene.remove(highlighter);
         }
+    },
+    mark(field) {
+        var file = field.charAt(0).charCodeAt() - 'a'.charCodeAt();
+        var rank = parseInt(field.charAt(1)) - 1;
+        if (this.sq[file][this.size - 1 - rank].ismarked)
+          return;
+        var marker = new THREE.Mesh(marker_geometry, marker_material);
+        marker.ismarker = true;
+        var position = this.sq[file][this.size - 1 - rank].board_object.position;
+        marker.position.set(position.x, position.y, position.z);
+        this.sq[file][this.size - 1 - rank].marker = marker;
+        this.sq[file][this.size - 1 - rank].ismarked = true;
+        scene.add(marker);
+    },
+    unmark(field) {
+        var file = field.charAt(0).charCodeAt() - 'a'.charCodeAt();
+        var rank = parseInt(field.charAt(1)) - 1;
+        if (!this.sq[file][this.size - 1 - rank].ismarked)
+          return;
+        scene.remove(this.sq[file][this.size - 1 - rank].marker);
+        this.sq[file][this.size - 1 - rank].marker = null;
+        scene.remove(this.sq[file][this.size - 1 - rank].marker);
+        this.sq[file][this.size - 1 - rank].ismarked = false;
     },
     get_stack: function (sq) {
         return this.sq[sq.file][sq.rank];
