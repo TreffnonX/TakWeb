@@ -30,10 +30,11 @@ var server = {
         var proto='ws://';
         if (window.location.protocol === "https:")
             proto='wss://';
-        this.connection = new WebSocket(proto+url, "binary");
+        this.connection = new WebSocket(proto + url, "binary");
         board.server = this;
         this.connection.onerror = function (e) {
-            this.output("Connection error: " + e);
+            output("Connection error: " + e);
+            console.log(e);
         };
         this.connection.onmessage = function (e) {
             var blob = e.data;
@@ -339,6 +340,13 @@ var server = {
                 $('#gameoveralert-text').html(msg);
                 $('#gameoveralert').modal('show');
             }
+            //Game#1 [Mark/Unmark]_[Player/Observer] field.
+            else if (spl[1] === "Mark_Player" || spl[1] === "Unmark_Player"
+                || spl[1] === "Mark_Observer" || spl[1] === "Unmark_Observer") {
+                var marked = spl[1].contains("Mark");
+                var observer = spl[1].contains("Observer");
+                board.mark(marked, observer, spl[2].trim());
+            }
           }
         }
         else if (e.startsWith("Login or Register")) {
@@ -461,14 +469,6 @@ var server = {
             $cs.append('<span class="cmdreply">'+msg+'</span><br>');
             $cs.scrollTop($cs[0].scrollHeight);
         }
-        //mark field.
-        else if (e.startsWith("Mark")) {
-            board.mark(e.split()[1].trim());
-        }
-        //unmark field.
-        else if (e.startsWith("Unmark")) {
-            board.unmark(e.split()[1].trim());
-        }
         //new seek
         else if (e.startsWith("Seek new")) {
             //Seek new 1 chaitu 5 180
@@ -582,11 +582,11 @@ var server = {
 
         this.send("Game#" + board.gameno + " Resign");
     },
-    mark: function(field) {
-        this.send("Game#" + board.gameno + " Mark " + field);
-    },
-    unmark: function(field) {
-        this.send("Game#" + board.gameno + " Unmark " + field);
+    setmark: function(marked, field) {
+        var msg = "Game#" + board.gameno + (marked ? " Mark " : " Unmark ") + field;
+        if (board.gameno == 0)
+          return;
+        this.send(msg);
     },
     acceptseek: function (e) {
         this.send("Accept " + e);

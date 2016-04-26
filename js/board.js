@@ -29,7 +29,9 @@ var black_piece_geometry;
 var white_caps_geometry;
 var black_caps_geometry;
 var marker_geometry;
-var marker_material = new THREE.LineBasicMaterial({color: 0xff0000, transparent: true, opacity: 0.5});
+var marker_player_material = new THREE.LineBasicMaterial({color: 0xff0000, transparent: true, opacity: 0.5});
+var marker_observer_material = new THREE.LineBasicMaterial({color: 0x00ff00, transparent: true, opacity: 0.5});
+var marker_both_material = new THREE.LineBasicMaterial({color: 0xaaaa00, transparent: true, opacity: 0.5});
 var white_square_tex_name = 'images/board/white_simple.png';
 var black_square_tex_name = 'images/board/black_simple.png';
 var white_piece_tex_name = 'images/pieces/white_simple_pieces.png';
@@ -37,6 +39,8 @@ var black_piece_tex_name = 'images/pieces/black_simple_pieces.png';
 var white_caps_tex_name = 'images/pieces/white_simple_caps.png';
 var black_caps_tex_name = 'images/pieces/black_simple_caps.png';
 var table_tex_name = 'images/wooden_table.png';
+
+THREE.ImageUtils.crossOrigin = '';
 
 var board = {
     size: 0,
@@ -193,7 +197,8 @@ var board = {
 
                 this.board_objects.push(square);
                 this.sq[i][j].board_object = square;
-                this.sq[i][j].ismarked = false;
+                this.sq[i][j].ismarked_by_player = false;
+                this.sq[i][j].ismarked_by_observer = false;
                 scene.add(square);
             }
         }
@@ -542,14 +547,11 @@ var board = {
             var file = firstBoardSquare.file;
             var rank = firstBoardSquare.rank;
             var field = String.fromCharCode(file + 'a'.charCodeAt()) + (rank + 1);
-            if (this.sq[file][this.size - 1 - rank].ismarked) {
-              this.unmark(field);
-              server.unmark(field);
-            }
-            else {
-              this.mark(field);
-              server.mark(field);
-            }
+            var square = this.sq[file][this.size - 1 - rank];
+            var marked = (this.observing
+                ? !square.ismarked_by_observer : !square.ismarked_by_player);
+            this.setmark(marked, this.observing, field);
+            server.setmark(marked, field);
             return;
         }
         this.remove_total_highlight();
@@ -1188,8 +1190,7 @@ var board = {
         var blackCaps = [];
         while (piece = this.piece_objects.pop())
         {
-          if (piece.onsquare)
-            continue;
+          piece.onsquare = false;
           this.flatten(piece);
           if (piece.iswhitepiece) {
             if (piece.iscapstone)
@@ -1207,20 +1208,6 @@ var board = {
         for (var i = 0; i < this.size; i++) {
             for (var j = 0; j < this.size; j++) {
                 while (piece = this.sq[i][j].pop()) {
-                    piece.onsquare = false;
-                    this.flatten(piece);
-                    if (piece.iswhitepiece) {
-                      if (piece.iscapstone)
-                        whiteCaps.push(piece);
-                      else
-                        whitePieces.push(piece);
-                    }
-                    else {
-                      if (piece.iscapstone)
-                        blackCaps.push(piece);
-                      else
-                        blackPieces.push(piece);
-                    }
                 }
             }
         }
@@ -1416,28 +1403,47 @@ var board = {
             scene.remove(highlighter);
         }
     },
-    mark(field) {
+    setmark: function (marked, observer, field) {
         var file = field.charAt(0).charCodeAt() - 'a'.charCodeAt();
         var rank = parseInt(field.charAt(1)) - 1;
-        if (this.sq[file][this.size - 1 - rank].ismarked)
+        var square = this.sq[file][this.size - 1 - rank];
+        
+        // don't mark, if already marked.
+        if ((observer && square.ismarked_by_observer == marked)
+             || (!observer && square.ismarked_by_player == marked))
           return;
-        var marker = new THREE.Mesh(marker_geometry, marker_material);
-        marker.ismarker = true;
-        var position = this.sq[file][this.size - 1 - rank].board_object.position;
-        marker.position.set(position.x, position.y, position.z);
-        this.sq[file][this.size - 1 - rank].marker = marker;
-        this.sq[file][this.size - 1 - rank].ismarked = true;
-        scene.add(marker);
-    },
-    unmark(field) {
-        var file = field.charAt(0).charCodeAt() - 'a'.charCodeAt();
-        var rank = parseInt(field.charAt(1)) - 1;
-        if (!this.sq[file][this.size - 1 - rank].ismarked)
-          return;
-        scene.remove(this.sq[file][this.size - 1 - rank].marker);
-        this.sq[file][this.size - 1 - rank].marker = null;
-        scene.remove(this.sq[file][this.size - 1 - rank].marker);
-        this.sq[file][this.size - 1 - rank].ismarked = false;
+        
+        // update marked state.
+        if (observer) {
+          square.ismarked_by_observer = marked;
+        }
+        else {
+          square.ismarked_by_player = marked;
+        }
+        var squareMarked = square.ismarked_by_observer || square.ismarked_by_player;
+
+        // create/remove marker.
+        if (squareMarked && square.marker == null) {
+            var marker = new THREE.Mesh(marker_geometry, marker_player_material);
+            marker.ismarker = true;
+            var position = square.board_object.position;
+            marker.position.set(position.x, position.y, position.z);
+            square.marker = marker;
+            scene.add(marker);
+        }
+        else if (!squareMarked && square.marker !== null) {
+            scene.remove(square.marker);
+            square.marker = null;
+        }
+        
+        // update marker color.
+        if (squareMarked)
+        {
+          square.marker.material = (square.ismarked_by_observer ? (square.ismarked_by_player
+              ? marker_both_material
+              : marker_observer_material)
+              : marker_player_material);
+        }
     },
     get_stack: function (sq) {
         return this.sq[sq.file][sq.rank];
