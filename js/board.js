@@ -820,6 +820,8 @@ var board = {
     },
     gameover: function () {
         console.log('gameover ' + this.result);
+        $('#player-opp').addClass('selectplayer');
+        $('#player-me').addClass('selectplayer');
         this.notate(this.result);
         alert("info", "Game over!! " + this.result);
         this.scratch = true;

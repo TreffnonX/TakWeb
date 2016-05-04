@@ -294,20 +294,23 @@ input[type=range]::-webkit-slider-runnable-track {
 .unselected {
     background: grey;
 }
+#player-opp, #player-me {
+  padding: 2px;
+  display: inline-block;
+  border-radius: 8px;
+  border: 2px solid #e7e7e7;
+}
 .selectplayer {
-    border-radius: 20px;
-    border: 2px solid black;
+    border-color: #444 !important;
     background-color: #e1c99a;
 }
-#player-opp, .player1-name {
-    display: inline;
+.player1-name, .player2-name {
+    padding: 0 2px;
+    display: inline-block;
     color: black;
-    padding: 2px;
 }
-#player-me, .player2-name {
-    display: inline;
-    color: black;
-    padding: 2px;
+.timer {
+  display: inline-block;
 }
 .border {
   border-radius : 20px;
