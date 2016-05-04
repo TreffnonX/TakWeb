@@ -1,6 +1,8 @@
 // server greeting message.
 var server_greeting = "TreffnonX-22.04.16";
 
+var chat_time
+
 var server = {
     connection: null,
     timeoutvar: null,

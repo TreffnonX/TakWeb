@@ -255,7 +255,7 @@ input[type=range]::-webkit-slider-runnable-track {
   width: 100%;
 }
 #moveslist tbody tr td a span:hover {
-  background-color: #aaaaaa;
+  background-color: #ffffff;
 }
 .curmove {
   background-color: #e1c99a;

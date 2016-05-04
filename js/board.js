@@ -759,6 +759,10 @@ var board = {
     },
     //move the server sends
     serverPmove: function (file, rank, caporwall) {
+        var oldpos = -1;
+        if(board.moveshown!=board.movecount) {
+          oldpos = board.moveshown;
+        }
         fastforward();
         var obj = this.getfromstack((caporwall === 'C'), this.is_white_piece_to_move());
 
@@ -776,9 +780,15 @@ var board = {
 
         this.notatePmove(file + rank, caporwall);
         this.incmovecnt();
+        if(oldpos !== -1)
+          board.showmove(oldpos);
     },
     //Move move the server sends
     serverMmove: function (f1, r1, f2, r2, nums) {
+        var oldpos = -1;
+        if(board.moveshown!=board.movecount) {
+          oldpos = board.moveshown;
+        }
         fastforward();
         var s1 = this.get_board_obj(f1.charCodeAt(0) - 'A'.charCodeAt(0), r1 - 1);
         var fi = 0, ri = 0;
@@ -805,6 +815,8 @@ var board = {
         this.notateMmove(f1.charCodeAt(0) - 'A'.charCodeAt(0), Number(r1) - 1,
                 f2.charCodeAt(0) - 'A'.charCodeAt(0), Number(r2) - 1, nums);
         this.incmovecnt();
+        if(oldpos !== -1)
+          board.showmove(oldpos);
     },
     gameover: function () {
         console.log('gameover ' + this.result);
@@ -931,7 +943,7 @@ var board = {
             }
         }
         if (whitewin && blackwin)
-            this.result = "1/2-1/2";
+            this.result = (this.movecount%2 == 0)?"R-0":"0-R";
         else if (whitewin)
             this.result = "R-0";
         else if (blackwin)
