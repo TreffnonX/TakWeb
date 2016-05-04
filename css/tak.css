@@ -304,6 +304,14 @@ input[type=range]::-webkit-slider-runnable-track {
     border-color: #444 !important;
     background-color: #e1c99a;
 }
+.notification-icon {
+  width: 25px;
+  height: 25px;
+}
+.notification-icon:hover {
+  background-color: white;
+  border-radius: 3px;
+}
 .player1-name, .player2-name {
     padding: 0 2px;
     display: inline-block;
