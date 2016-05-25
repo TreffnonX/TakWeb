@@ -54,7 +54,8 @@ var server = {
         };
         this.connection.onclose = function (e) {
             document.getElementById('login-button').textContent = 'Sign up / Login';
-            document.getElementById("onlineplayers").innerHTML = "0";
+            $('#onlineplayers').addClass('hidden');
+            document.getElementById("onlineplayersbadge").innerHTML = "0";
             document.getElementById("seekcount").innerHTML = "0";
             document.getElementById("gamecount").innerHTML = "0";
             document.getElementById("scratchsize").disabled = false;
@@ -168,7 +169,7 @@ var server = {
             $('.player2-time:first').html(m+':'+s);
         }
         else if (e.startsWith("GameList Add Game#")) {
-            //GameList Add Game#1 player1 vs player2, 4x4, 180, 0 half-moves played, player1 to move
+            //GameList Add Game#1 player1 vs player2, 4x4, 180, 15, 0 half-moves played, player1 to move
             var spl = e.split(" ");
 
             var no = spl[2].split("Game#")[1];
@@ -176,6 +177,8 @@ var server = {
             var t = Number(spl[7].split(",")[0]);
             var m = parseInt(t/60);
             var s = getZero(parseInt(t%60));
+            
+            var inc = spl[8].split(",")[0];
 
             var p1 = spl[3];
             var p2 = spl[5].split(",")[0];
@@ -299,6 +302,8 @@ var server = {
                   }
                 } else if (spl[2] === "1/2-1/2") {
                   msg += "The game is a draw!";
+                } else if (spl[2] === "0-0") {
+                  msg += "The game is aborted!";
                 } else {//black wins
                   if(board.observing === true) {
                     msg += "Black wins by "+type;
@@ -473,23 +478,32 @@ var server = {
         }
         //new seek
         else if (e.startsWith("Seek new")) {
-            //Seek new 1 chaitu 5 180
+            //Seek new 1 chaitu 5 180 15 W|B
             var spl = e.split(" ");
 
             var no = spl[2];
             var t = Number(spl[5]);
             var m = parseInt(t/60);
             var s = getZero(parseInt(t%60));
+            
+            var inc = spl[6];
 
             var p = spl[3];
             var sz = spl[4]+'x'+spl[4];
+            
+            img = "images/circle_any.svg"
+            if(spl.length == 8) {
+                img = (spl[7] === 'W')?"images/circle_white.svg":
+                                       "images/circle_black.svg";
+            }
+            img = '<img src="'+img+'"/>';
 
             p = "<span class='playername'>"+p+"</span>";
             sz = "<span class='badge'>"+sz+"</span>";
 
             var li = $('<li/>').addClass('seek'+no).appendTo($('#seeklist'));
-            $('<a/>').append(p + " " + sz + " " + m+":"+s).click(function() {server.acceptseek(spl[2])}).
-                        appendTo(li);
+            $('<a/>').append(img + " " + p + " " + sz + " " + m+":"+s+" +"+inc+"s")
+                .click(function() {server.acceptseek(spl[2])}).appendTo(li);
 
             var op = document.getElementById("seekcount");
             op.innerHTML = Number(op.innerHTML)+1;
@@ -507,7 +521,8 @@ var server = {
         }
         //Online players
         else if (e.startsWith("Online ")) {
-            var op = document.getElementById("onlineplayers");
+            $('#onlineplayers').removeClass('hidden');
+            var op = document.getElementById("onlineplayersbadge");
             op.innerHTML = Number(e.split("Online ")[1]);
         }
     },
@@ -533,11 +548,19 @@ var server = {
         var size = $('#boardsize').find(':selected').text();
         size = parseInt(size);
         var time = $('#timeselect').find(':selected').text();
-        this.send("Seek "+size+" "+time*60);
+        var inc = $('#incselect').find(':selected').text();
+        var clrtxt = $('#colorselect').find(':selected').text();
+        var clr='';
+        if(clrtxt == 'White')
+          clr = ' W';
+        if(clrtxt == 'Black')
+          clr = ' B';
+
+        this.send("Seek "+size+" " + (time*60) + " " + inc + clr);
         $('#creategamemodal').modal('hide');
     },
     removeseek: function() {
-        this.send("Seek 0 0");
+        this.send("Seek 0 0 0");
         $('#creategamemodal').modal('hide');
     },
     draw: function() {

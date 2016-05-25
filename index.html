@@ -46,6 +46,7 @@
         <script src="js/playtaktour.js"></script>
         <script src="js/settings.js"></script>
         <script src="js/geometries.js"></script>
+        <script src="js/textures.js"></script>
         <script src="js/board.js"></script>
         <script src="js/server.js"></script>
         
@@ -109,6 +110,7 @@
                             <ul id="gamelist" class="dropdown-menu scrollable-menu">
                             </ul>
                         </li>
+                        <li><a target="_blank" title="Search for previous games" href="http://www.playtak.com/games">History</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li>
@@ -131,8 +133,8 @@
                                 <img id="settings-img" src="images/ic_settings_black_24px.svg" height="20" width="20"/>
                             </a>
                         </li>
-                        <li>
-                            <a href="#" title="Number of online players" >Online <span class="badge" id="onlineplayers">0</span></a>
+                        <li id="onlineplayers" class="hidden">
+                            <a href="#" title="Number of online players" >Online <span class="badge" id="onlineplayersbadge">0</span></a>
                         </li>
                         <li>
                             <button id="login-button" type="button" class="btn btn-default navbar-btn" onclick="server.init()">Sign up / Login</button>
@@ -254,7 +256,7 @@
                           </div>
                         </div>
                         <div class="row">
-                          <div class="col-sm-12">
+                          <div class="col-sm-6">
                             <div class="form-group">
                               <label for="time">Time (minutes per player)</label>
                               <select class="form-control" id="timeselect">
@@ -267,6 +269,34 @@
                                 <option>30</option>
                                 <option>60</option>
                                 <option>180</option>
+                              </select>
+                            </div>
+                          </div>
+                          <div class="col-sm-6">
+                            <div class="form-group">
+                              <label for="time">Increment (seconds)</label>
+                              <select class="form-control" id="incselect">
+                                <option selected="selected">0</option>
+                                <option>5</option>
+                                <option>10</option>
+                                <option>15</option>
+                                <option>20</option>
+                                <option>30</option>
+                                <option>45</option>
+                                <option>60</option>
+                                <option>90</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-sm-12">
+                            <div class="form-group">
+                              <label for="time">My Color</label>
+                              <select class="form-control" id="colorselect">
+                                <option selected="selected">Any</option>
+                                <option>White</option>
+                                <option>Black</option>
                               </select>
                             </div>
                           </div>
@@ -565,11 +595,12 @@
                     </div>
                     <div class="modal-body">
                         <ul>
-                          <li>All online games played after <b>23 April 5:00 PM GMT</b> will be released into public domain</li>
-                          <li>Player names will be released along with the game notation and player stats</li>
-                          <li>Games played before that time will be stripped off of player names and released</li>
-                          <li>Only email addresses and passwords will remain private on the server</li>
-                          <li>This policy is adopted in the hopes that people and AIs can study games and improve Tak</li>
+                          <li>All online games are recorded and available for viewing
+                            <a target="_blank" href="http://www.playtak.com/games/">here</a>
+                            and includes player names.
+                          </li>
+                          <li>IP addresses will be logged for abuse control.</li>
+                          <li>Only email addresses, passwords, IP addresses will remain private on the server.</li>
                         </ul>
                     </div>
                 </div>
