@@ -1,0 +1,206 @@
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&#215;</button>
+            <h4 class="modal-title">Settings</h4>
+        </div>
+        <div class="modal-body">
+            <div class="split-container-left">
+                <p>
+                    <b>Styles</b>
+                    <br/>
+                </p>
+                <form>
+                    White pieces<br/>
+                    <div class="radio-list-item">
+                        <input id="piece-style-white-simple" type="radio" name="piece-style" checked="true" />
+                        <img src="images/pieces/white_simple.jpg" class="radio-list-img"
+                             onClick="radioPieceStyleWhite('simple')"/>
+                    </div>
+                    <div class="radio-list-item">
+                        <input id="piece-style-white-lightwood" type="radio" name="piece-style" checked="true" />
+                        <img src="images/pieces/white_lightwood.jpg" class="radio-list-img"
+                             onClick="radioPieceStyleWhite('lightwood')"/>
+                    </div>
+                    <div class="radio-list-item">
+                        <input id="piece-style-white-chipped" type="radio" name="piece-style" checked="true" />
+                        <img src="images/pieces/white_chipped.jpg" class="radio-list-img"
+                             onClick="radioPieceStyleWhite('chipped')"/>
+                    </div>
+                    <div class="radio-list-item">
+                        <input id="piece-style-white-whitemarble" type="radio" name="piece-style"/>
+                        <img src="images/pieces/white_whitemarble.jpg" class="radio-list-img"
+                             onClick="radioPieceStyleWhite('whitemarble')"/>
+                    </div>
+                    <div class="radio-list-item">
+                        <input id="piece-style-white-bone" type="radio" name="piece-style"/>
+                        <img src="images/pieces/white_bone.jpg" class="radio-list-img"
+                             onClick="radioPieceStyleWhite('bone')"/>
+                    </div>
+                </form>
+                <form>
+                    Black pieces<br/>
+                    <div class="radio-list-item">
+                        <input id="piece-style-black-simple" type="radio" name="piece-style" checked="true" />
+                        <img src="images/pieces/black_simple.jpg" class="radio-list-img"
+                             onClick="radioPieceStyleBlack('simple')"/>
+                    </div>
+                    <div class="radio-list-item">
+                        <input id="piece-style-black-livingwood" type="radio" name="piece-style" checked="true" />
+                        <img src="images/pieces/black_livingwood.jpg" class="radio-list-img"
+                             onClick="radioPieceStyleBlack('livingwood')"/>
+                    </div>
+                    <div class="radio-list-item">
+                        <input id="piece-style-black-wood" type="radio" name="piece-style"/>
+                        <img src="images/pieces/black_wood.jpg" class="radio-list-img"
+                             onClick="radioPieceStyleBlack('wood')"/>
+                    </div>
+                    <div class="radio-list-item">
+                        <input id="piece-style-black-blackwood" type="radio" name="piece-style"/>
+                        <img src="images/pieces/black_blackwood.jpg" class="radio-list-img"
+                             onClick="radioPieceStyleBlack('blackwood')"/>
+                    </div>
+                    <div class="radio-list-item">
+                        <input id="piece-style-black-pietersite" type="radio" name="piece-style"/>
+                        <img src="images/pieces/black_pietersite.jpg" class="radio-list-img"
+                             onClick="radioPieceStyleBlack('pietersite')"/>
+                    </div>
+                    <div class="radio-list-item">
+                        <input id="piece-style-black-bluemarble" type="radio" name="piece-style"/>
+                        <img src="images/pieces/black_bluemarble.jpg" class="radio-list-img"
+                             onClick="radioPieceStyleBlack('bluemarble')"/>
+                    </div>
+                </form>
+                <form>
+                    White squares<br/>
+                    <div class="radio-list-item">
+                        <input id="board-style-white-simple" type="radio" name="board-style" checked="true" />
+                        <img src="images/board/white_simple.png" class="radio-list-img"
+                             onClick="radioBoardStyleWhite('simple')"/>
+                    </div>
+                    <div class="radio-list-item">
+                        <input id="board-style-white-white-velvet" type="radio" name="board-style" checked="true" />
+                        <img src="images/board/white_white-velvet.png" class="radio-list-img"
+                             onClick="radioBoardStyleWhite('white-velvet')"/>
+                    </div>
+                    <div class="radio-list-item">
+                        <input id="board-style-white-sand-velvet" type="radio" name="board-style" checked="true" />
+                        <img src="images/board/white_sand-velvet.png" class="radio-list-img"
+                             onClick="radioBoardStyleWhite('sand-velvet')"/>
+                    </div>
+                    <div class="radio-list-item">
+                        <input id="board-style-white-ornate" type="radio" name="board-style"/>
+                        <img src="images/board/white_ornate.png" class="radio-list-img"
+                             onClick="radioBoardStyleWhite('ornate')"/>
+                    </div>
+                    <div class="radio-list-item">
+                        <input id="board-style-white-beige-ornate" type="radio" name="board-style"/>
+                        <img src="images/board/white_beige-ornate.png" class="radio-list-img"
+                             onClick="radioBoardStyleWhite('beige-ornate')"/>
+                    </div>
+                </form>
+                <form>
+                    Black squares<br/>
+                    <div class="radio-list-item">
+                        <input id="board-style-black-simple" type="radio" name="board-style" checked="true" />
+                        <img src="images/board/black_simple.png" class="radio-list-img"
+                             onClick="radioBoardStyleBlack('simple')" />
+                    </div>
+                    <div class="radio-list-item">
+                        <input id="board-style-black-green-velvet" type="radio" name="board-style"/>
+                        <img src="images/board/black_green-velvet.png" class="radio-list-img"
+                             onClick="radioBoardStyleBlack('green-velvet')"/>
+                    </div>
+                    <div class="radio-list-item">
+                        <input id="board-style-black-blue-velvet" type="radio" name="board-style"/>
+                        <img src="images/board/black_blue-velvet.png" class="radio-list-img"
+                             onClick="radioBoardStyleBlack('blue-velvet')"/>
+                    </div>
+                    <div class="radio-list-item">
+                        <input id="board-style-black-red-velvet" type="radio" name="board-style"/>
+                        <img src="images/board/black_red-velvet.png" class="radio-list-img"
+                             onClick="radioBoardStyleBlack('red-velvet')"/>
+                    </div>
+                    <div class="radio-list-item">
+                        <input id="board-style-black-blue-ornate" type="radio" name="board-style"/>
+                        <img src="images/board/black_blue-ornate.png" class="radio-list-img"
+                             onClick="radioBoardStyleBlack('blue-ornate')"/>
+                    </div>
+                    <div class="radio-list-item">
+                        <input id="board-style-black-black-ornate" type="radio" name="board-style"/>
+                        <img src="images/board/black_black-ornate.png" class="radio-list-img"
+                             onClick="radioBoardStyleBlack('black-ornate')"/>
+                    </div>
+                    <div class="radio-list-item">
+                        <input id="board-style-black-red-ornate" type="radio" name="board-style"/>
+                        <img src="images/board/black_red-ornate.png" class="radio-list-img"
+                             onClick="radioBoardStyleBlack('red-ornate')"/>
+                    </div>
+                    <div class="radio-list-item">
+                        <input id="board-style-black-dark-gem" type="radio" name="board-style"/>
+                        <img src="images/board/black_dark-gem.png" class="radio-list-img"
+                             onClick="radioBoardStyleBlack('dark-gem')"/>
+                    </div>
+                </form>
+            </div>
+            <div class="split-container-right">
+                <p>
+                    <b>
+                        Interface
+                    </b>
+                    <br/>
+                    <i>Some changes to the interface will require the page to be reloaded.</i><br/>
+                </p>
+                <form>
+                    <input id="antialiasing-checkbox" type="checkbox" onClick="checkboxAntialiasing()"/>
+                    Antialiasing (not reccomended for slower devices)
+                </form>
+                <form>
+                    <input id="hide-chat-time" type="checkbox" onClick="checkboxHideChatTime()"/>
+                    Hide chat time
+                </form>
+                <form>
+                    <input id="hide-send-checkbox" type="checkbox" onClick="checkboxHideSend()"/>
+                    Hide 'Send' button
+                </form>
+                <form>
+                    <input id="auto-open-chat-checkbox" type="checkbox" onClick="checkboxAutoOpenChat()" checked="true" />
+                    Show/Hide chat on window resize
+                </form>
+                <br/>
+                <p>
+                    <b>
+                        Board and Pieces
+                    </b>
+                    <br/>
+                </p>
+                <form>
+                    <input id="wall-orientation" type="checkbox" onClick="checkboxDiagonalWalls()"/>
+                    Diagonal walls
+                </form>
+                <form>
+                    <input id="auto-rotate-checkbox" type="checkbox" onClick="checkboxAutoRotate()" checked="true" />
+                    Rotate board when player 2
+                </form>
+                <form>
+                    Piece size
+                    <input id="piece-size-slider" type="range" value="80" step="2" min="60" max="88"
+                           oninput="sliderPieceSize(this.value)" onChange="board.updatepieces()"/>
+                    <span id="piece-size-display">88</span>
+                </form>
+                <form>
+                    <input id="table-checkbox" type="checkbox" onClick="checkboxTable()"/>
+                    Show table
+                </form>
+            </div>
+            <p>
+                <br/>
+                <i>
+                    Settings made in this dialog are stored local.
+                    If you log in from another device, or if you delete your browser cache,
+                    you will have to set this again.
+                </i>
+            </p>
+        </div>
+    </div>
+</div>

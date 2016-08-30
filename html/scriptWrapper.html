@@ -1,0 +1,27 @@
+<div>
+    <script>
+        // calls to initialize the UI and animate the 3D canvas.
+        init();
+        animate();
+
+        if(localStorage.getItem('sound')==='false') {
+            volume_change();
+        }
+        if(localStorage.getItem('keeploggedin')==='true') {
+            server.init();
+        }
+        if(isBreakpoint('xs') || isBreakpoint('sm')) {
+            hidechat();
+            hidermenu();
+        } else {
+            showchat();
+            showrmenu();
+        }
+
+        $('#chat').offset({ top: $('nav').height() + 5 });
+        $('#chat-toggle-button').offset({ top: $('nav').height() + 7 });
+
+        $('#chat-server').append('<a href="#" onclick="showPrivacyPolicy();"> Privacy Policy</a><br/>');
+        tour(false);
+    </script>
+</div>
