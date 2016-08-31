@@ -5,6 +5,14 @@ var antialiasing_mode = false;
  * First the left-hand div, then the right-hand div.
  */
 function loadSettings() {
+  // load TSS.
+  if(localStorage.getItem('tss')) {
+    var rawTSS = decodeURI(localStorage.getItem('tss'));
+    var parsedTSS = parseTSS(rawTSS);
+    var customTSS = objectifyTSSTree(parsedTSS, tssDefinition);
+    tss = mergeTSSTrees(tss, customTSS);
+  }
+
   // load the setting for wall orientation.
   if(localStorage.getItem('diagonal_walls')==='true') {
     document.getElementById('wall-orientation').checked = true;
@@ -110,6 +118,17 @@ function loadSettings() {
   if(localStorage.getItem('auto_rotate')==='false') {
     document.getElementById('auto-rotate-checkbox').checked = false;
   }
+}
+
+function textFieldTSS() {
+  var rawTSS = $('#tss-field').val();
+  $('#tss-field').val('');
+  console.log(rawTSS);
+  var parsedTSS = parseTSS(rawTSS);
+  var tssTree = objectifyTSSTree(parsedTSS, tssDefinition);
+  tss = mergeTSSTrees(tss, tssTree);
+  localStorage.setItem('tss', encodeURI(toString(tss, 'tss')));
+  board.updatepieces();
 }
 
 /*

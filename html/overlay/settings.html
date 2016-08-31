@@ -51,6 +51,11 @@
                              onClick="radioPieceStyleBlack('livingwood')"/>
                     </div>
                     <div class="radio-list-item">
+                        <input id="piece-style-black-livingwood_dark" type="radio" name="piece-style" checked="true" />
+                        <img src="images/pieces/black_livingwood_dark.jpg" class="radio-list-img"
+                             onClick="radioPieceStyleBlack('livingwood_dark')"/>
+                    </div>
+                    <div class="radio-list-item">
                         <input id="piece-style-black-wood" type="radio" name="piece-style"/>
                         <img src="images/pieces/black_wood.jpg" class="radio-list-img"
                              onClick="radioPieceStyleBlack('wood')"/>
@@ -59,6 +64,11 @@
                         <input id="piece-style-black-blackwood" type="radio" name="piece-style"/>
                         <img src="images/pieces/black_blackwood.jpg" class="radio-list-img"
                              onClick="radioPieceStyleBlack('blackwood')"/>
+                    </div>
+                    <div class="radio-list-item">
+                        <input id="piece-style-black-blackwood_med" type="radio" name="piece-style"/>
+                        <img src="images/pieces/black_blackwood_med.jpg" class="radio-list-img"
+                             onClick="radioPieceStyleBlack('blackwood_med')"/>
                     </div>
                     <div class="radio-list-item">
                         <input id="piece-style-black-pietersite" type="radio" name="piece-style"/>
@@ -188,9 +198,13 @@
                            oninput="sliderPieceSize(this.value)" onChange="board.updatepieces()"/>
                     <span id="piece-size-display">88</span>
                 </form>
-                <form>
+                <form >
                     <input id="table-checkbox" type="checkbox" onClick="checkboxTable()"/>
                     Show table
+                </form>
+                <form class="form-group" onSubmit="textFieldTSS()">
+                    Experimental! Use with caution!
+                    <input type="text" class="form-control" id="tss-field"/>
                 </form>
             </div>
             <p>

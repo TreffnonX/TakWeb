@@ -290,8 +290,10 @@ var board = {
         
         var white_material = new THREE.MeshLambertMaterial({map: white_texture});
         var black_material = new THREE.MeshLambertMaterial({map: black_texture});
-        var white_cap_material = new THREE.MeshLambertMaterial({map: white_cap_texture, vertexColors: THREE.VertexColors});
-        var black_cap_material = new THREE.MeshLambertMaterial({map: black_cap_texture, vertexColors: THREE.VertexColors});
+        var white_cap_material = new THREE.MeshLambertMaterial({map: white_cap_texture,
+            vertexColors: THREE.VertexColors});
+        var black_cap_material = new THREE.MeshLambertMaterial({map: black_cap_texture,
+            vertexColors: THREE.VertexColors});
         white_material.magFilter = THREE.LinearFilter;
         white_material.minFilter = THREE.LinearMipMapFilter;
         white_material.anisotropy = 1;

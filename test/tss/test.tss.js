@@ -416,4 +416,64 @@ describe ('Tak Style Serialization', function()
     expect(mergedTSS.pieces.models.capstone_example3.spline.node.length == 2).to.be.true;
     expect(mergedTSS.pieces.models.capstone_example.spline.node[0].x == 0.95).to.be.true;
   });
+
+  /**
+   * Are tss trees correctly regressed into raw TSS?
+   */
+  it ('should translate a TSS tree back to raw TSS correctly.', function()
+  {
+        var tssDef = '<tss'
+                   +   '<pieces?'
+                   +     '<models?'
+                   +       '<capstone*=s'
+                   +         '<spline'
+                   +           '<node* <x:f1> <y:f1>>'
+                   +         '>'
+                   +       '>'
+                   +     '>'
+                   +   '>'
+                   + '>';
+        var tssStr = '<tss'
+                   +   '<pieces'
+                   +     '<models'
+                   +       '<capstone=example'
+                   +         '<spline'
+                   +           '<node <x:0.98> <y:0>>'
+                   +           '<node <x:1> <y:0.02>>'
+                   +           '<node <x:1> <y:0.08>>'
+                   +           '<node <x:0.98> <y:0.1>>'
+                   +         '>'
+                   +       '>'
+                   +       '<capstone=example2'
+                   +         '<spline'
+                   +           '<node <x:0.95> <y:0>>'
+                   +           '<node <x:1> <y:0.02>>'
+                   +           '<node <x:1> <y:0.08>>'
+                   +           '<node <x:0.98> <y:0.1>>'
+                   +         '>'
+                   +       '>'
+                   +     '>'
+                   +   '>'
+                   + '>';
+    var parseTSS = tssJs.__get__('parseTSS');
+    var objectifyDefinitionTree = tssJs.__get__('objectifyDefinitionTree');
+    var objectifyTSSTree = tssJs.__get__('objectifyTSSTree');
+    var toString = tssJs.__get__('toString');
+    var completeTrim = tssJs.__get__('completeTrim');
+    var mergeTSSTrees = tssJs.__get__('mergeTSSTrees');
+    var rawDefinition = parseTSS(tssDef);
+    var definition = objectifyDefinitionTree(rawDefinition);
+    var rawTSS = parseTSS(tssStr);
+    var tss = objectifyTSSTree(rawTSS, definition);
+
+    var regressed = toString(tss, 'tss');
+    var rawTSS = parseTSS(regressed);
+    var tss2 = objectifyTSSTree(rawTSS, definition);
+    var trimmedOriginal = completeTrim(tssStr);
+    expect(trimmedOriginal == regressed).to.be.true;
+
+    tss = mergeTSSTrees(tss, tss);
+    regressed = toString(tss, 'tss');
+    expect(trimmedOriginal == regressed).to.be.true;
+  });
 });

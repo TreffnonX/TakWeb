@@ -429,6 +429,7 @@ function mergeTSSNode (target, source)
     else if (source.type === 'entity_array')
     {
       target = [];
+      target.type = 'entity_array';
       for (var i = 0; i < source.length; ++i)
       {
         target.push(mergeTSSNode(null, source[i]));
@@ -465,6 +466,7 @@ function cloneTSSNode (tssTree)
     else if (original[property].type === 'entity_array')
     {
       clone[property] = [];
+      clone[property].type = 'entity_array';
       for (var i = 0; i < original[property].length; ++i)
       {
         clone[property].push(cloneTSSNode(original[property][i]));
@@ -478,6 +480,41 @@ function cloneTSSNode (tssTree)
 
   // return resulting clone.
   return clone;
+}
+
+/**
+ * Translate a TSS based object back to string TSS.
+ */
+function toString (tss, name)
+{
+  var result =
+      '<'
+    + /^[a-z]*/.exec(name)
+    + (/_/.exec(name) ? '=' + /_(.*)/.exec(name)[1] : '');
+    for (var property in tss)
+    {
+      if (property != 'type' && property != 'name')
+      {
+        if (tss[property].type === 'entity_array')
+        {
+          for (var i = 0; i < tss[property].length; ++i)
+          {
+            result += toString(tss[property][i], property);
+          }
+        }
+        else if (tss[property].type === 'entity')
+        {
+          result += toString(tss[property], property);
+        }
+        else
+        {
+          result += '<' + property + ':' + tss[property] + '>';
+        }
+      }
+    }
+
+  result += ">";
+  return result;
 }
 
 /**
