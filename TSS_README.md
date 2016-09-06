@@ -1,3 +1,5 @@
+THIS FILE IS NOT UP TO DATE. THE SYNTAX IS SLIGHTLY DIFFERENT!!!
+
 Tak Style Serialization
 
 Tak Style Serialization (TSS) is a nestable tree-structured representation of

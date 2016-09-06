@@ -1,46 +1,43 @@
 <body>
-    <!-- Container Popups -->
-    <div class="device-xs hidden-xs"></div>
-    <div class="device-sm hidden-sm"></div>
-    <div class="device-md hidden-md"></div>
-    <div class="device-lg hidden-lg"></div>
+  <!-- Container Popups -->
+  <div class="device-xs hidden-xs"></div>
+  <div class="device-sm hidden-sm"></div>
+  <div class="device-md hidden-md"></div>
+  <div class="device-lg hidden-lg"></div>
 
-    <!-- Static navbar -->
-    <div ng-include="'html/view/navBar.html'"></div>
+  <!-- Static navbar -->
+  <div ng-include="'html/view/navBar.html'"></div>
 
-    <!-- Notation window -->
-    <div id="notation" ng-include="'html/view/notation.html'"></div>
+  <!-- Notation window -->
+  <div id="notation_area" ng-include="'html/view/notation.html'" style="top: 120px;"></div>
 
-    <!-- Chat window -->
-    <div ng-include="'html/view/chat.html'"></div>
+  <!-- Chat window -->
+  <div ng-include="'html/view/chat.html'"></div>
 
-    <!-- Game canvas. The 3D environment is drawn on this. -->
-    <canvas id="gamecanvas"></canvas>
+  <!-- Game canvas. The 3D environment is drawn on this. -->
+  <canvas id="gamecanvas"></canvas>
 
-    <!-- Alert box -->
-    <div ng-include="'html/overlay/alertBox.html'"></div>
+  <!-- Alert box -->
+  <div ng-include="'html/overlay/alertBox.html'"></div>
 
-    <!-- Create game window -->
-    <div id="creategamemodal" class="modal fade" role="dialog" ng-include="'html/overlay/createGame.html'"></div>
+  <!-- Create game window -->
+  <div id="creategamemodal" class="modal fade" role="dialog" ng-include="'html/overlay/createGame.html'"></div>
 
-    <!-- Game over alert -->
-    <div id="gameoveralert" class="modal fade" role="dialog" ng-include="'html/overlay/gameOver.html'"></div>
+  <!-- Game over alert -->
+  <div id="gameoveralert" class="modal fade" role="dialog" ng-include="'html/overlay/gameOver.html'"></div>
 
-    <!-- Login window -->
-    <div id="login" class="modal fade" role="dialog" ng-include="'html/overlay/loginWindow.html'"></div>
+  <!-- Login window -->
+  <div id="login" class="modal fade" role="dialog" ng-include="'html/overlay/loginWindow.html'"></div>
 
-    <!-- Settings window -->
-    <div id="settings-modal" class="modal fade" ng-include="'html/overlay/settings.html'"></div>
+  <!-- Settings window -->
+  <div id="settings-modal" class="modal fade" ng-include="'html/overlay/settings.html'"></div>
 
-    <!-- Privacy notice -->
-    <div id="privacy-modal" class="modal fade" ng-include="'html/overlay/privacyNotice.html'"></div>
+  <!-- Privacy notice -->
+  <div id="privacy-modal" class="modal fade" ng-include="'html/overlay/privacyNotice.html'"></div>
 
-    <!-- Help window -->
-    <div id="help-modal" class="modal fade" ng-include="'html/overlay/helpNotice.html'"></div>
+  <!-- Help window -->
+  <div id="help-modal" class="modal fade" ng-include="'html/overlay/helpNotice.html'"></div>
 
-    <!-- HUD controls -->
-    <div id="zoomcontrols" ng-include="'html/view/hudControl.html'"></div>
-
-    <!-- Load script -->
-    <div ng-include="'html/scriptWrapper.html'"></div>
+  <!-- Load script -->
+  <div ng-include="'html/script.html'"></div>
 </body>

@@ -1,0 +1,108 @@
+body {
+  color: #aaa;
+}
+#rmenu {
+  background-color: #222;
+  color: #ddd;
+  border-color: #333;
+}
+#notationbar {
+  background-color: #111;
+  color: #ddd;
+  border-top-color: #333;
+  border-bottom-color: #333;
+}
+.navbar {
+  background-color: #222;
+  color: #ddd;
+  border-color: #555;
+}
+#login-button {
+  background-color: #333;
+  color: #ddd;
+  border-color: #555;
+}
+#player-opp-name, #player-me-name, #player-name {
+  color: #ddd;
+}
+#chat-server {
+  background-color: #111;
+  color: #ddd;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #333;
+}
+#chat-me {
+  background-color: #161616;
+  color: #ddd;
+  border-color: #333;
+}
+.chatname {
+  color: #e1c99a;
+}
+.selectplayer, .selectplayer #player-me-name, .selectplayer #player-opp-name {
+  color: black;
+  border-color: #ddd !important;
+}
+.notification-icon:hover {
+  background-color: #555;
+  border-radius: 3px;
+}
+.curmove {
+  color: black;
+}
+#moveslist tbody tr td a span:hover {
+  background-color: #555;
+}
+.modal-content {
+  background-color: #222;
+}
+.navbar-default .navbar-nav > li > a,
+.navbar-default .navbar-nav > li > a:focus,
+.navbar-default .navbar-nav > li > a:hover {
+  color: #aaa;
+}
+.navbar-nav > .open > a:focus,
+.navbar-default .navbar-nav > .open > a:hover,
+.navbar-default .navbar-nav > .open > a,
+.navbar-default .navbar-nav > .open > a:focus,
+.navbar-default .navbar-nav > .open > a:hover {
+  background-color: #555;
+  color: #ddd;
+}
+.dropdown-menu {
+  background-color: #222;
+}
+.dropdown-menu > li > a {
+  color: #aaa;
+}
+.dropdown-menu > li > a:hover {
+  background-color: #aaa;
+}
+.radio-list-img {
+  border-color: #222;
+}
+.radio-list-img:hover {
+  border-color: #666;
+}
+.close {
+  color: #fff;
+}
+.close:hover {
+  color: #888;
+}
+.form-control {
+  background-color: #111;
+  border-color: #555;
+  color: #aaa;
+}
+.btn-default {
+  background-color: #111;
+  border-color: #555;
+  color: #aaa;
+}
+.btn-default:hover {
+  background-color: #222;
+  border-color: #555;
+  color: #aaa;
+}

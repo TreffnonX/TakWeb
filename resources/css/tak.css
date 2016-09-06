@@ -1,40 +1,39 @@
 body {
-    margin: 0px;
-    padding: 0px;
-    overflow: hidden;
+  margin: 0px;
+  padding: 0px;
+  overflow: hidden;
 }
 #gamecanvas{
-    display: block;
-    position: absolute;
-    left: 0px;
-    top: 0px;
+  display: block;
+  position: absolute;
+  left: 0px;
+  top: 0px;
 }
-#notation {
-    position: absolute;
-    left: 5px;
-    top: 20%;
-    z-index: 10;
+#notation_area {
+  position: absolute;
+  left: 5px;
+  z-index: 10;
 }
 #chat-toggle-button{
-    position: absolute;
-    right: 185px;
-    top: 62px;
-    z-index: 10;
+  position: absolute;
+  right: 185px;
+  top: 56px;
+  z-index: 10;
 }
 #chat {
-    position: absolute;
-    right: 5px;
-    top: 60px;
-    z-index: 10;
-    width: 180px;
-    height: 80%;
+  position: absolute;
+  right: 5px;
+  top: 60px;
+  z-index: 10;
+  width: 180px;
+  height: 80%;
 }
 #chat-server {
-    padding: 3px;
-    word-wrap: break-word;
-    background-color: #e7e7e9;
-    height:100%;
-    overflow-y: auto;
+  padding: 3px;
+  word-wrap: break-word;
+  background-color: #e7e7e9;
+  height:100%;
+  overflow-y: auto;
 }
 .optlist a {
   margin-top: 2px;
@@ -68,21 +67,26 @@ body {
   color: #7D7D7D;
 }
 #chat-toggle-text {
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
 }
 #notation-toggle-text {
-    position: absolute;
-    right: -17px;
-    top: 2px;
+  position: absolute;
+  right: -17px;
+  top: 2px;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
 }
 .toggle-text {
-    border-radius: 2px;
-    border: 2px solid #404040;
-    border-radius: 5px;
-    text-align: center;
-    color: #c3c3c3;
-    background-color: #404040;
-    line-height: 12px;
-    width: 19px;
+  border-radius: 2px;
+  border: 2px solid #404040;
+  border-radius: 5px;
+  text-align: center;
+  color: #999;
+  font-size: 20px;
+  background-color: #404040;
+  line-height: 12px;
+  width: 19px;
 }
 #help-modal ul li ul {
   font-weight: bold;
@@ -168,67 +172,76 @@ input[type=range]::-webkit-slider-runnable-track {
   border: 2px #f83 solid;
 }
 .width-full {
-    margin: 0 auto;
-    width: 100%;
+  margin: 0 auto;
+  width: 100%;
 }
 .height-full {
-    margin: 0 auto;
-    height: 100%;
+  margin: 0 auto;
+  height: 100%;
 }
 .height-auto {
-    height: auto;
+  height: auto;
 }
 #status {
-    position: absolute;
-    bottom: 0px;
-    right: 0px;
-    z-index: 10;
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  z-index: 10;
 }
 #pindicator {
-    position: absolute;
-    top: 60px;
-    left: 50%;
-    transform: translate(-50%, 0);
-    font-size: 200%;
-    z-index: 10;
+  position: absolute;
+  top: 60px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  font-size: 200%;
+  z-index: 10;
 }
 #zoomcontrols {
-    position: absolute;
-    bottom: 5px;
-    left: 5px;
-    z-index: 10;
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+  z-index: 10;
 }
 #rmenu {
-    border-style: solid;
-    border-width: 2px;
-    border-color: black;
-    padding: 5px;
-    margin: 2px;
-    width: 200px;
-    text-align: left;
-    overflow: hidden;
-    background-color: #e7e7e7;
+  border-style: solid;
+  border-width: 2px;
+  border-color: #333;
+  padding: 5px;
+  margin: 2px;
+  width: 200px;
+  text-align: left;
+  overflow: hidden;
+  background-color: #e7e7e7;
+}
+.head {
+  cursor: ns-resize;
 }
 #notationbar {
-    height: 300px;
-    overflow: auto;
+  border-top-style: solid;
+  border-top-color: #888;
+  border-top-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: #888;
+  border-bottom-width: 1px;
+  overflow: auto;
+  overflow-x: hidden;
 }
 #alertbox {
-    position: absolute;
-    bottom: 0px;
-    width: 100%;
-    z-index: 8;
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  z-index: 8;
 }
 .alerts {
-    width: 60%;
-    margin: auto;
+  width: 60%;
+  margin: auto;
 }
 .alert {
-    margin: 0px;
+  margin: 0px;
 }
 #moveslist {
-    display: table;
-    width: 170px;
+  display: table;
+  width: 170px;
 }
 #moveslist a {
   color: inherit;
@@ -261,18 +274,18 @@ input[type=range]::-webkit-slider-runnable-track {
   background-color: #e1c99a;
 }
 .center {
-    text-align: center;
+  text-align: center;
 }
 .left {
-    text-align: left;
+  text-align: left;
 }
 .right {
-    text-align: right;
+  text-align: right;
 }
 .vertical-text {
-    transform-origin: bottom right;
-    transform: rotate(-90deg);
-    float: left;
+  transform-origin: bottom right;
+  transform: rotate(-90deg);
+  float: left;
 }
 .modal {
   text-align: center;
@@ -289,20 +302,20 @@ input[type=range]::-webkit-slider-runnable-track {
   vertical-align: middle;
 }
 .selected {
-    background: red;
+  background: red;
 }
 .unselected {
-    background: grey;
+  background: grey;
 }
 #player-opp, #player-me {
   padding: 2px;
   display: inline-block;
   border-radius: 8px;
-  border: 2px solid #e7e7e7;
+  border: 2px solid hsla(0, 0%, 0%, 0);
 }
 .selectplayer {
-    border-color: #444 !important;
-    background-color: #e1c99a;
+  border-color: #444 !important;
+  background-color: #e1c99a;
 }
 .notification-icon {
   width: 25px;
@@ -313,9 +326,9 @@ input[type=range]::-webkit-slider-runnable-track {
   border-radius: 3px;
 }
 .player1-name, .player2-name {
-    padding: 0 2px;
-    display: inline-block;
-    color: black;
+  padding: 0 2px;
+  display: inline-block;
+  color: black;
 }
 .timer {
   display: inline-block;
@@ -330,4 +343,7 @@ input[type=range]::-webkit-slider-runnable-track {
   height: auto;
   max-height: 280px;
   overflow-x: hidden;
+}
+.dropdown-menu > li > a {
+  cursor: pointer;
 }

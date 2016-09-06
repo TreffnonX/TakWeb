@@ -1,23 +1,21 @@
 <div>
-    <div id="chat-toggle-button">
-        <a href="#" onclick="togglechat()">
-            <!--<img src="images/ic_menu_black_24px.svg" width="24" height="24">-->
-            <!--<div class="vertical-text">chat</div>-->
-            <div id="chat-toggle-text" class="toggle-text">
-                &gt;&gt;<br/>
-                c<br/>h<br/>a<br/>t
-            </div>
-        </a>
+  <div id="chat-toggle-button">
+    <a href="#" onclick="togglechat()">
+      <div id="chat-toggle-text" class="toggle-text">
+        <br/><b>&#8250;</b><br/>&#160;
+      </div>
+    </a>
+  </div>
+  <div id="chat">
+    <div class="form-group height-full chat-box">
+      <div id="chat-server"></div>
     </div>
-    <div id="chat">
-        <div class="form-group height-full chat-box">
-            <div id="chat-server"></div>
-        </div>
-        <form role="form" onsubmit="server.chat(); return false;" class="height-auto" style="margin-top: 4px;" autocomplete="off">
-            <input type="text" class="form-control" id="chat-me"/>
-            <button id="send-button" type="submit" style="margin-top: 4px;" class="btn btn-primary">
-                Send
-            </button>
-        </form>
-    </div>
+    <form role="form" onsubmit="server.chat(); return false;" class="height-auto" style="margin-top: 4px;"
+          autocomplete="off">
+      <input type="text" class="form-control" id="chat-me"/>
+      <button id="send-button" type="submit" style="margin-top: 4px;" class="btn btn-primary">
+        Send
+      </button>
+    </form>
+  </div>
 </div>

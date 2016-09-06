@@ -19,26 +19,19 @@ var render_light = false;
 var burring_depth = 4;
 var burring_height = 1;
 var burring_vertical = 1;
-var capstone_ring_width = 0.5;
-var capstone_ring_depth = 0.5;
-var capstone_ring_burring = 0.5;
-var capstone_rings = [9.3, 52.5, 57.3];
-var capstone_top_rings = [22.27, 24.43];
-var white_piece_geometry;
-var black_piece_geometry;
-var white_caps_geometry;
-var black_caps_geometry;
-var marker_geometry;
+
 var marker_player_material = new THREE.LineBasicMaterial({color: 0xff0000, transparent: true, opacity: 0.5});
 var marker_observer_material = new THREE.LineBasicMaterial({color: 0x00ff00, transparent: true, opacity: 0.5});
 var marker_both_material = new THREE.LineBasicMaterial({color: 0xaaaa00, transparent: true, opacity: 0.5});
-var white_square_tex_name = 'images/board/white_simple.png';
-var black_square_tex_name = 'images/board/black_simple.png';
-var white_piece_tex_name = 'images/pieces/white_simple_pieces.png';
-var black_piece_tex_name = 'images/pieces/black_simple_pieces.png';
-var white_caps_tex_name = 'images/pieces/white_simple_caps.png';
-var black_caps_tex_name = 'images/pieces/black_simple_caps.png';
-var table_tex_name = 'images/wooden_table.png';
+var white_square_tex_name = 'resources/images/board/white_simple.png';
+var black_square_tex_name = 'resources/images/board/black_simple.png';
+var white_piece_tex_name = 'resources/images/pieces/white_simple_pieces.png';
+var black_piece_tex_name = 'resources/images/pieces/black_simple_pieces.png';
+var white_caps_tex_name = 'resources/images/pieces/white_simple_caps.png';
+var black_caps_tex_name = 'resources/images/pieces/black_simple_caps.png';
+var table_tex_name = 'resources/images/wooden_table.png';
+var board_tex_anme = 'resources/images/board/board.png';
+var move_sound;
 
 THREE.ImageUtils.crossOrigin = '';
 
@@ -205,7 +198,7 @@ var board = {
         }
 
         // board border.
-        var board_tex = new THREE.TextureLoader().load('images/board.png');
+        var board_tex = new THREE.TextureLoader().load(board_tex_anme);
         var border_material = new THREE.MeshLambertMaterial({map: board_tex});
         border_material.magFilter = THREE.LinearMipMapFilter;
         border_material.minFilter = THREE.LinearMipMapFilter;
@@ -225,7 +218,7 @@ var board = {
           this_position[par] = this.position[par];
         }
         var loader = new THREE.FontLoader();
-        loader.load('js/thirdparty/three/helvetiker_regular.typeface.json', function (font)
+        loader.load('resources/helvetiker_regular.typeface.json', function (font)
         {
           for (var i = 0; i < this_ref.size; ++i)
           {
@@ -483,7 +476,10 @@ var board = {
           $('.moveno'+this.movecount+':first').addClass('curmove');
         }
         this.movecount++;
-        document.getElementById("move-sound").play();
+        if (!move_sound)
+        {
+          move_sound = document.getElementById("move-sound"); }
+        move_sound.play();
 
         $('#player-me').toggleClass('selectplayer');
         $('#player-opp').toggleClass('selectplayer');
@@ -496,7 +492,7 @@ var board = {
         }
 
         this.ismymove = this.checkifmymove();
-        $('#undo').attr('src', 'images/requestundo.svg');
+        $('#undo').attr('src', icon_path + 'requestundo.svg');
     },
     save_board_pos: function() {
       var bp = [];
@@ -1321,7 +1317,7 @@ var board = {
         var tbl = document.getElementById("moveslist");
         while (tbl.rows.length > 0)
             tbl.deleteRow(0);
-        document.getElementById("draw").src = "images/offer-hand.png";
+        document.getElementById("draw").src = icon_path + 'offer-hand.png';
         stopTime();
 
         $('#player-me-name').removeClass('player1-name');
@@ -1344,8 +1340,8 @@ var board = {
         $('#player-me-time').addClass('player2-time');
         $('#player-opp-time').addClass('player1-time');
 
-        $('#player-me-img').attr('src', 'images/player-black.png');
-        $('#player-opp-img').attr('src', 'images/player-white.png');
+        $('#player-me-img').attr('src', icon_path + 'player-black.png');
+        $('#player-opp-img').attr('src', icon_path + 'player-white.png');
 
         $('#player-opp').addClass('selectplayer');
 
@@ -1598,5 +1594,5 @@ function stopTime() {
 }
 
 function getZero(t) {
-    return t<10?'0'+t:t;
+    return (t < 10 ? '0' + t : t);
 }

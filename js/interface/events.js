@@ -3,217 +3,278 @@ var raycaster = new THREE.Raycaster();
 var highlighter;
 var mouse = new THREE.Vector2();
 var offset = new THREE.Vector3();
+var lastDragCoords;
+var dragTarget = null;
 
 /*
  * Called on file initialization.
  */
-function init() {
-    // init TSS.
-    initTSS();
+function init()
+{
+  // init TSS.
+  initTSS();
 
-    // load the user settings.
-    loadSettings();
-    
-    // construct geometries.
-    constructGeometries();
-    
-    canvas = document.getElementById("gamecanvas");
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+  // load the user settings.
+  loadSettings();
 
-    camera = new THREE.PerspectiveCamera(70, canvas.width / canvas.height, 1, 2000);
-    camera.position.set(0, canvas.width / 2, canvas.height / 2);
+  // construct geometries.
+  constructGeometries();
 
-    scene = new THREE.Scene();
+  canvas = document.getElementById("gamecanvas");
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
 
-    renderer = new THREE.WebGLRenderer({canvas: canvas,
-        antialias: antialiasing_mode});
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setClearColor(0x111111, 1);
+  camera = new THREE.PerspectiveCamera(70, canvas.width / canvas.height, 1, 2000);
+  camera.position.set(0, canvas.width / 2, canvas.height / 2);
 
-    document.body.appendChild(renderer.domElement);
+  scene = new THREE.Scene();
 
-    window.addEventListener('resize', onWindowResize, false);
-    controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.minDistance = 200;
-    controls.maxDistance = 1500;
-    controls.enableKeys = false;
-    var ua = navigator.userAgent.toLowerCase();
-    if (ua.indexOf("android") > -1 || ua.indexOf("iphone") > -1 ||
-            ua.indexOf("ipod") > -1 || ua.indexOf("ipad") > -1)
-        controls.zoomSpeed = 0.5;
+  renderer = new THREE.WebGLRenderer({canvas: canvas,
+      antialias: antialiasing_mode});
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setClearColor(0x111111, 1);
 
-    var material = new THREE.LineBasicMaterial({color: 0x0000f0});
-    var geometry = new THREE.TorusGeometry(sq_size / 2 + 5, 3, 16, 100);
-    //geometry.vertices.shift();
-    highlighter = new THREE.Mesh(geometry, material);
-    highlighter.rotateX(Math.PI / 2);
+  document.body.appendChild(renderer.domElement);
 
-    canvas.addEventListener('mousedown', onDocumentMouseDown, false);
-    canvas.addEventListener('mouseup', onDocumentMouseUp, false);
-    canvas.addEventListener('mousemove', onDocumentMouseMove, false);
+  window.addEventListener('resize', onWindowResize, false);
+  controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.minDistance = 200;
+  controls.maxDistance = 1500;
+  controls.enableKeys = false;
+  var ua = navigator.userAgent.toLowerCase();
+  if (ua.indexOf("android") > -1 || ua.indexOf("iphone") > -1 ||
+      ua.indexOf("ipod") > -1 || ua.indexOf("ipad") > -1)
+      controls.zoomSpeed = 0.5;
 
-    board.init(5, "white", true);
+  var material = new THREE.LineBasicMaterial({color: 0x0000f0});
+  var geometry = new THREE.TorusGeometry(sq_size / 2 + 5, 3, 16, 100);
+
+  highlighter = new THREE.Mesh(geometry, material);
+  highlighter.rotateX(Math.PI / 2);
+
+  canvas.addEventListener('mousedown', onDocumentMouseDown, false);
+  canvas.addEventListener('mouseup', onDocumentMouseUp, false);
+  canvas.addEventListener('mousemove', onDocumentMouseMove, false);
+
+  initInterface();
+
+  board.init(5, "white", true);
+
+  if(localStorage.getItem('sound')==='false') {
+    volume_change();
+  }
+  if(localStorage.getItem('keeploggedin')==='true') {
+    server.init();
+  }
+  if(isBreakpoint('xs') || isBreakpoint('sm')) {
+    hidechat();
+    hidermenu();
+  } else {
+    showchat();
+    showrmenu();
+  }
+
+  $('#chat').offset({ top: $('nav').height() + 5 });
+  $('#chat-toggle-button').offset({ top: $('nav').height() + 5 });
+
+  $('#chat-server').append('<a href="#" onclick="showPrivacyPolicy();"> Privacy Policy</a><br/>');
 }
 
 /*
  * Called on window scaling.
  */
-function onWindowResize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+function onWindowResize()
+{
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
 
-    renderer.setSize(canvas.width, canvas.height);
+  renderer.setSize(canvas.width, canvas.height);
 
-    camera.aspect = canvas.width / canvas.height;
-    camera.updateProjectionMatrix();
+  camera.aspect = canvas.width / canvas.height;
+  camera.updateProjectionMatrix();
 
-    $('#chat').offset({ top: $('nav').height() + 5 });
-    $('#chat-toggle-button').offset({ top: $('nav').height() + 7 });
-    $('#chat').height(window.innerHeight - $('nav').height() - 85
-        + (localStorage.getItem('hide-send')==='true' ? 34 : 0));
+  $('#chat').offset({ top: $('nav').height() + 5 });
+  $('#chat-toggle-button').offset({ top: $('nav').height() + 5 });
+  $('#chat').height(window.innerHeight - $('nav').height() - 85
+      + (localStorage.getItem('hide-send')==='true' ? 34 : 0));
 
-    if (localStorage.getItem('auto_chat')!=='false')
-    {
-        if(isBreakpoint('xs') || isBreakpoint('sm')) {
-            hidechat();
-            hidermenu();
-        } else {
-            showchat();
-            showrmenu();
-        }
-    }
-}
+  notationSizeCheck();
 
-function onDocumentMouseMove(e) {
-    e.preventDefault();
-    var x = e.clientX - canvas.offsetLeft;
-    var y = e.clientY - canvas.offsetTop;
-    mouse.x = (x / canvas.width) * 2 - 1;
-    mouse.y = -(y / canvas.height) * 2 + 1;
-
-    board.mousemove();
-}
-
-function onDocumentMouseDown(e) {
-    e.preventDefault();
-
-    var x = e.clientX - canvas.offsetLeft;
-    var y = e.clientY - canvas.offsetTop;
-    mouse.x = (x / canvas.width) * 2 - 1;
-    mouse.y = -(y / canvas.height) * 2 + 1;
-
-    if(board.movecount !== board.moveshown)
-        return;
-
-    if (e.button === 2)
-        board.rightclick();
-    else {
-        if(board.movecount !== board.moveshown)
-            return;
-        board.leftclick(e);
-    }
-}
-function onDocumentMouseUp(e) {
-    if (e.button === 2)
-        board.rightup();
-}
-function output(e) {
-    console.log("output:" + e);
-}
-
-function buttonclick() {
-    var input = document.getElementById("input");
-    var data = input.value;
-    input.value = "";
-    server.send(data);
-}
-
-function scratchbutton(size) {
-    if (board.observing)
-        server.send("Unobserve " + board.gameno);
-    if (board.scratch || board.observing) {
-        board.clear();
-        board.init(size, "white", true);
-    }
-}
-function rmenu() {
-    if($('#rmenu').hasClass('hidden'))
-        showrmenu();
-    else
-        hidermenu();
-}
-function showrmenu() {
-    $('#notation-toggle-text').html('<<<br>n<br>o<br>t<br>a<br>t<br>i<br>o<br>n');
-    $('#rmenu').removeClass('hidden');
-}
-function hidermenu() {
-    $('#rmenu').addClass('hidden');
-    $('#notation-toggle-text').html('>><br>n<br>o<br>t<br>a<br>t<br>i<br>o<br>n');
-}
-function zoom(out) {
-    console.log('zoom', out, controls);
-    if (out)
-        controls.constraint.dollyOut(1.5);
-    else
-        controls.constraint.dollyIn(1.5);
-}
-function loadtpn() {
-    var tpn = window.prompt("Paste TPS here", "");
-    if (!tpn)
-        return;
-    board.loadtpn(tpn);
-}
-function statusclick() {
-    var inp = document.getElementById('status-inp');
-    console.log('input: '+inp.value);
-    server.send(inp.value);
-    inp.innerHTML='';
-}
-function volume_change() {
-    var img = document.getElementById("volume-img");
-    var movesound = document.getElementById("move-sound");
-    var chimesound = document.getElementById("chime-sound");
-
-    if(img.src.match("mute")) {
-        img.src = "images/ic_volume_up_black_24px.svg";
-        movesound.muted = false;
-        chimesound.muted = false;
-
-        movesound.play();
-        localStorage.setItem('sound', 'true');
+  if (localStorage.getItem('auto_chat')!=='false')
+  {
+    if(isBreakpoint('xs') || isBreakpoint('sm')) {
+      hidechat();
+      hidermenu();
     } else {
-        img.src = "images/ic_volume_mute_black_24px.svg";
-        movesound.muted = true;
-        chimesound.muted = true;
+      showchat();
+      showrmenu();
+    }
+  }
+}
 
-        localStorage.setItem('sound', 'false');
-    }
+function onDocumentMouseMove(e)
+{
+  e.preventDefault();
+  var x = e.clientX - canvas.offsetLeft;
+  var y = e.clientY - canvas.offsetTop;
+  mouse.x = (x / canvas.width) * 2 - 1;
+  mouse.y = -(y / canvas.height) * 2 + 1;
+
+  board.mousemove();
 }
-function togglechat() {
-    if($('#chat').hasClass('hidden')) {
-        showchat()
-    } else {
-        hidechat();
-    }
+
+function onDocumentMouseDown(e)
+{
+  e.preventDefault();
+
+  var x = e.clientX - canvas.offsetLeft;
+  var y = e.clientY - canvas.offsetTop;
+  mouse.x = (x / canvas.width) * 2 - 1;
+  mouse.y = -(y / canvas.height) * 2 + 1;
+
+  if(board.movecount !== board.moveshown) return;
+
+  if (e.button === 2)
+    board.rightclick();
+  else {
+    if(board.movecount !== board.moveshown) return;
+    board.leftclick(e);
+  }
 }
-function showchat() {
-    $('#chat-toggle-button').css('right', 185);
-    $('#chat-toggle-text').html('>><br>c<br>h<br>a<br>t');
-    $('#chat').removeClass('hidden');
+
+function onDocumentMouseUp(e)
+{
+  if (e.button === 2) board.rightup();
 }
-function hidechat() {
-    $('#chat-toggle-button').css('right', 0);
-    $('#chat-toggle-text').html('<<<br>c<br>h<br>a<br>t');
-    $('#chat').addClass('hidden');
+
+function output(e)
+{
+  console.log("output:" + e);
 }
-function isBreakpoint( alias ) {
-    return $('.device-' + alias).is(':hidden');
+
+function buttonclick()
+{
+  var input = document.getElementById("input");
+  var data = input.value;
+  input.value = "";
+  server.send(data);
 }
-function getHeader(key, val) {
+
+function scratchbutton(size)
+{
+  if (board.observing) server.send("Unobserve " + board.gameno);
+  if (board.scratch || board.observing) {
+    board.clear();
+    board.init(size, "white", true);
+  }
+}
+
+function rmenu()
+{
+  if($('#rmenu').hasClass('hidden'))
+    showrmenu();
+  else
+    hidermenu();
+}
+
+function showrmenu()
+{
+  $('#notation-toggle-text').html(' <br/><b>&#8249;</b><br/>&#160;');
+  $('#rmenu').removeClass('hidden');
+}
+
+function hidermenu()
+{
+  $('#rmenu').addClass('hidden');
+  $('#notation-toggle-text').html(' <br/><b>&#8250;</b><br/>&#160;');
+}
+
+function zoom(out)
+{
+  console.log('zoom', out, controls);
+  if (out)
+    controls.constraint.dollyOut(1.5);
+  else
+    controls.constraint.dollyIn(1.5);
+}
+
+function loadtpn()
+{
+  var tpn = window.prompt("Paste TPS here", "");
+  if (!tpn) return;
+  board.loadtpn(tpn);
+}
+function statusclick()
+{
+  var inp = document.getElementById('status-inp');
+  console.log('input: '+inp.value);
+  server.send(inp.value);
+  inp.innerHTML='';
+}
+
+function volume_change()
+{
+  var img = document.getElementById("volume-img");
+  var movesound = document.getElementById("move-sound");
+  var chimesound = document.getElementById("chime-sound");
+
+  if(img.src.match("mute"))
+  {
+    img.src = icon_path + 'ic_volume_up_black_24px.svg';
+    movesound.muted = false;
+    chimesound.muted = false;
+
+    movesound.play();
+    localStorage.setItem('sound', 'true');
+  }
+  else
+  {
+    img.src = icon_path + 'ic_volume_mute_black_24px.svg';
+    movesound.muted = true;
+    chimesound.muted = true;
+
+    localStorage.setItem('sound', 'false');
+  }
+}
+
+function togglechat()
+{
+  if($('#chat').hasClass('hidden'))
+  {
+    showchat()
+  }
+  else
+  {
+    hidechat();
+  }
+}
+
+function showchat()
+{
+  $('#chat-toggle-button').css('right', 185);
+  $('#chat-toggle-text').html(' <br/><b>&#8250;</b><br/>&#160;');
+  $('#chat').removeClass('hidden');
+}
+
+function hidechat()
+{
+  $('#chat-toggle-button').css('right', 0);
+  $('#chat-toggle-text').html(' <br/><b>&#8249;</b><br/>&#160;');
+  $('#chat').addClass('hidden');
+}
+
+function isBreakpoint( alias )
+{
+  return $('.device-' + alias).is(':hidden');
+}
+
+function getHeader(key, val)
+{
   return '['+key+' "'+val+'"]\r\n';
 }
-function downloadNotation() {
+
+function downloadNotation()
+{
   var p1 = $('.player1-name:first').html();
   var p2 = $('.player2-name:first').html();
   var now = new Date();
@@ -249,30 +310,105 @@ function downloadNotation() {
   console.log('res='+res);
 }
 
-function showPrivacyPolicy() {
-    $('#help-modal').modal('hide');
-    $('#privacy-modal').modal('show');
+function showPrivacyPolicy()
+{
+  $('#help-modal').modal('hide');
+  $('#privacy-modal').modal('show');
 }
 
-function undoButton() {
-  if(board.scratch)
-    board.undo();
-  else
-    server.undo();
+function undoButton()
+{
+  if(board.scratch) board.undo();
+  else server.undo();
 }
 
-function fastrewind() {
+function fastrewind()
+{
   board.showmove(1);
 }
 
-function stepback() {
+function stepback()
+{
   board.showmove(board.moveshown-1);
 }
 
-function stepforward() {
+function stepforward()
+{
   board.showmove(board.moveshown+1);
 }
 
-function fastforward() {
+function fastforward()
+{
   board.showmove(board.movecount);
+}
+
+function notationSizeCheck()
+{
+  var winHeight = window.innerHeight;
+  var rmenuHeight = parseInt(document.getElementById('rmenu').offsetHeight);
+  var currentPosition = parseInt(/\d*/.exec(document.getElementById('notation_area').style.top));
+  var newPosition = Math.max(Math.min(currentPosition, winHeight - rmenuHeight - 8), 60);
+  document.getElementById('notation_area').style.top = newPosition + "px";
+
+  var currentHeight = parseInt(/\d*/.exec(document.getElementById('notationbar').style.height));
+  var newHeight = Math.min(currentHeight, winHeight - currentPosition - 183);
+  document.getElementById('notationbar').style.height = newHeight + "px";
+}
+
+/**
+ * Initialize all interface objects that need special attention.
+ */
+function initInterface()
+{
+  // custom drag.
+  document.body.addEventListener('mousedown', function (event)
+  {
+    event = event || window.event;
+    lastDragCoords = { x: event.clientX, y: event.clientY };
+    dragTarget = event.target;
+    while (dragTarget && dragTarget.classList && !dragTarget.classList.contains('draggable'))
+    {
+      dragTarget = dragTarget.parentNode;
+    }
+  }, false);
+  document.body.addEventListener('mouseup', function (event)
+  {
+    event = event || window.event;
+    dragTarget = null;
+  }, false);
+
+  // draggable objects.
+  document.body.addEventListener('mousemove', function (event)
+  {
+    // calculate offset.
+    event = event || window.event;
+    event.preventDefault();
+    if (dragTarget)
+    {
+      var offset = { x: event.clientX - lastDragCoords.x, y: event.clientY - lastDragCoords.y };
+      lastDragCoords = { x: event.clientX, y: event.clientY };
+    }
+
+    // drag notation.
+    if (dragTarget === document.getElementById('player-opp-head'))
+    {
+      var winHeight = window.innerHeight;
+      var rmenuHeight = parseInt(document.getElementById('rmenu').offsetHeight);
+      var currentPosition = parseInt(/\d*/.exec(document.getElementById('notation_area').style.top));
+      var newPosition = Math.max(Math.min(currentPosition + offset.y, winHeight - rmenuHeight - 8), 60);
+      document.getElementById('notation_area').style.top = newPosition + "px";
+      localStorage.setItem('notation_position', newPosition);
+    }
+
+    // resize notation.
+    else if (dragTarget === document.getElementById('player-me-head'))
+    {
+      var winHeight = window.innerHeight;
+      var currentPosition = parseInt(/\d*/.exec(document.getElementById('notation_area').style.top));
+      var currentHeight = parseInt(/\d*/.exec(document.getElementById('notationbar').style.height));
+      var newHeight = Math.min(currentHeight + offset.y, winHeight - currentPosition - 183);
+      document.getElementById('notationbar').style.height = newHeight + "px";
+      localStorage.setItem('notation_height', newHeight);
+    }
+  }, false);
 }

@@ -1,3 +1,9 @@
+var white_piece_geometry;
+var black_piece_geometry;
+var white_caps_geometry;
+var black_caps_geometry;
+var marker_geometry;
+
 /*
  * Construct non-default geometries used to represent objects.
  */
@@ -32,53 +38,6 @@ function constructGeometries()
   marker_geometry = new THREE.BoxGeometry(sq_size, sq_height + 4, sq_size);
   marker_geometry.center();
 }
-
-/*
- * Construct capstone geometry.
- */
-/*function constructCapstoneGeometry()
-{
-  var capsCut = [];
-
-  // create spline.
-  capsCut.push(new THREE.Vector3(0, 0, 0));
-  capsCut.push(new THREE.Vector3(capstone_radius, 0, 0));
-  for (i = 0; i < capstone_rings.length; ++i)
-  {
-    capsCut.push(new THREE.Vector3(capstone_radius, capstone_rings[i] - capstone_ring_width / 2 - capstone_ring_burring, 0));
-    capsCut.push(new THREE.Vector3(capstone_radius - capstone_ring_depth, capstone_rings[i] - capstone_ring_width / 2, 0));
-    capsCut.push(new THREE.Vector3(capstone_radius - capstone_ring_depth, capstone_rings[i] + capstone_ring_width / 2, 0));
-    capsCut.push(new THREE.Vector3(capstone_radius, capstone_rings[i] + capstone_ring_width / 2 + capstone_ring_burring, 0));
-  }
-  capsCut.push(new THREE.Vector3(capstone_radius, capstone_height - burring_height, 0));
-  for (i = capstone_top_rings.length - 1; i >= 0; --i)
-  {
-    capsCut.push(new THREE.Vector3(capstone_top_rings[i] + capstone_ring_width / 2 + capstone_ring_burring, capstone_height));
-    capsCut.push(new THREE.Vector3(capstone_top_rings[i] + capstone_ring_width / 2, capstone_height - capstone_ring_depth));
-    capsCut.push(new THREE.Vector3(capstone_top_rings[i] - capstone_ring_width / 2, capstone_height - capstone_ring_depth));
-    capsCut.push(new THREE.Vector3(capstone_top_rings[i] - capstone_ring_width / 2 - capstone_ring_burring, capstone_height));
-  }
-  for (i = 3; i >= 0; --i)
-  {
-    capsCut.push(new THREE.Vector3((capstone_radius - capstone_top_rings[capstone_top_rings - 1]) / 3 * i, capstone_height, 0));
-  }
-  
-  // create texPoints.
-  var texPoints = [];
-  texPoints.push(0);
-  var side = 2 + 4 * capstone_rings.length;
-  var top = 5 + 4 * capstone_top_rings.length;
-  for (i = 0; i < side; ++i)
-  {
-    texPoints.push(capsCut[i + 1].y / capstone_height);
-  }
-  for (i = 0; i < top - 1; ++i)
-  {
-    texPoints.push(capsCut[i + side + 1].x / capstone_radius);
-  }
-
-  return betterLathe(capsCut, texPoints, 32);
-}*/
 
 function constructCapstoneGeometry()
 {
@@ -412,10 +371,8 @@ function constructBurredBox(width, height, depth, burringDepth, burringHeight, b
       geometry.faceVertexUvs[0][i*2 + 0] = [tex_area[2], tex_area[1], tex_area[3]];
       geometry.faceVertexUvs[0][i*2 + 1] = [tex_area[1], tex_area[0], tex_area[3]];
     } else {
-      geometry.faceVertexUvs[0][i*2 + 0] =
-          [tex_side_area[2], tex_side_area[1], tex_side_area[3]];
-      geometry.faceVertexUvs[0][i*2 + 1] =
-          [tex_side_area[1], tex_side_area[0], tex_side_area[3]];
+      geometry.faceVertexUvs[0][i*2 + 0] = [tex_side_area[2], tex_side_area[1], tex_side_area[3]];
+      geometry.faceVertexUvs[0][i*2 + 1] = [tex_side_area[1], tex_side_area[0], tex_side_area[3]];
     }
   }
 

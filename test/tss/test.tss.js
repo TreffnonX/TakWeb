@@ -1,7 +1,6 @@
 var expect = require('chai').expect;
 var rewire = require('rewire');
-var tssJs = rewire('../../js/tss/tss.js');
-
+var tssJs = rewire('../../js/logic/tss/tss.js');
 
 describe ('Tak Style Serialization', function()
 {
@@ -422,39 +421,39 @@ describe ('Tak Style Serialization', function()
    */
   it ('should translate a TSS tree back to raw TSS correctly.', function()
   {
-        var tssDef = '<tss'
-                   +   '<pieces?'
-                   +     '<models?'
-                   +       '<capstone*=s'
-                   +         '<spline'
-                   +           '<node* <x:f1> <y:f1>>'
-                   +         '>'
-                   +       '>'
-                   +     '>'
-                   +   '>'
-                   + '>';
-        var tssStr = '<tss'
-                   +   '<pieces'
-                   +     '<models'
-                   +       '<capstone=example'
-                   +         '<spline'
-                   +           '<node <x:0.98> <y:0>>'
-                   +           '<node <x:1> <y:0.02>>'
-                   +           '<node <x:1> <y:0.08>>'
-                   +           '<node <x:0.98> <y:0.1>>'
-                   +         '>'
-                   +       '>'
-                   +       '<capstone=example2'
-                   +         '<spline'
-                   +           '<node <x:0.95> <y:0>>'
-                   +           '<node <x:1> <y:0.02>>'
-                   +           '<node <x:1> <y:0.08>>'
-                   +           '<node <x:0.98> <y:0.1>>'
-                   +         '>'
-                   +       '>'
-                   +     '>'
-                   +   '>'
-                   + '>';
+    var tssDef = '<tss'
+               +   '<pieces?'
+               +     '<models?'
+               +       '<capstone*=s'
+               +         '<spline'
+               +           '<node* <x:f1> <y:f1>>'
+               +         '>'
+               +       '>'
+               +     '>'
+               +   '>'
+               + '>';
+    var tssStr = '<tss'
+               +   '<pieces'
+               +     '<models'
+               +       '<capstone=example'
+               +         '<spline'
+               +           '<node <x:0.98> <y:0>>'
+               +           '<node <x:1> <y:0.02>>'
+               +           '<node <x:1> <y:0.08>>'
+               +           '<node <x:0.98> <y:0.1>>'
+               +         '>'
+               +       '>'
+               +       '<capstone=example2'
+               +         '<spline'
+               +           '<node <x:0.95> <y:0>>'
+               +           '<node <x:1> <y:0.02>>'
+               +           '<node <x:1> <y:0.08>>'
+               +           '<node <x:0.98> <y:0.1>>'
+               +         '>'
+               +       '>'
+               +     '>'
+               +   '>'
+               + '>';
     var parseTSS = tssJs.__get__('parseTSS');
     var objectifyDefinitionTree = tssJs.__get__('objectifyDefinitionTree');
     var objectifyTSSTree = tssJs.__get__('objectifyTSSTree');

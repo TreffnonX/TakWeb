@@ -1,82 +1,88 @@
 <nav class="navbar navbar-default navbar-fixed-top">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-                <li><a href="#" data-toggle="modal" data-target="#help-modal">Help</a></li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown"
-                       title="Create a new empty board to play locally" aria-haspopup="true" aria-expanded="false"
-                       id="scratchsize"> Scratch Board
-                        <span class="caret"></span></a>
-
-                    <ul class="dropdown-menu">
-                        <li><a href="#" onclick="scratchbutton(3);">3x3</a></li>
-                        <li><a href="#" onclick="scratchbutton(4);">4x4</a></li>
-                        <li><a href="#" onclick="scratchbutton(5);">5x5</a></li>
-                        <li><a href="#" onclick="scratchbutton(6);">6x6</a></li>
-                        <li><a href="#" onclick="scratchbutton(7);">7x7</a></li>
-                        <li><a href="#" onclick="scratchbutton(8);">8x8</a></li>
-                    </ul>
-                </li>
-                <!--<li><a  class="visible-xs-block" title="Reverse view" class="hidden-xs" href="#" onclick="board.reverseboard(true)">Flip view</a></li>-->
-                <li><a id="loadtps" href="#" onclick="loadtpn()">Load TPS</a></li>
-                <li>
-                    <a id="creategame" href="#" title="Create online game" onclick="$('#creategamemodal').modal('show')">New Game</a>
-                </li>
-                <li class="dropdown">
-                    <a id="joingame" href="#" class="dropdown-toggle" role="button" data-toggle="dropdown"
-                       title="Accept a seek" aria-haspopup="true" aria-expanded="false"> Join game
-                        <span class="badge" id="seekcount">0</span>
-                        <span class="caret"></span></a>
-                    <ul id="seeklist" class="dropdown-menu scrollable-menu">
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <a id="watch" href="#" class="dropdown-toggle" role="button" data-toggle="dropdown"
-                       title="Observe a game" aria-haspopup="true" aria-expanded="false"> Watch
-                        <span class="badge" id="gamecount">0</span>
-                        <span class="caret"></span></a>
-                    <ul id="gamelist" class="dropdown-menu scrollable-menu">
-                    </ul>
-                </li>
-                <li><a target="_blank" title="Search for previous games" href="http://www.playtak.com/games">History</a></li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li>
-                    <a href="#" title="Mute/Un mute" role="button" onclick="volume_change()">
-                        <!--<button type="button" class="btn btn-default">-->
-                        <img id="volume-img" src="images/ic_volume_up_black_24px.svg" height="20" width="20"/>
-                        <!--</button>-->
-                    </a>
-                    <audio id="move-sound">
-                        <source src="audio/move.mp3" type="audio/mpeg"/>
-                        <source src="audio/move.ogg" type="audio/ogg"/>
-                    </audio>
-                    <audio id="chime-sound">
-                        <source src="audio/chime.mp3" type="audio/mpeg"/>
-                        <source src="audio/chime.ogg" type="audio/ogg"/>
-                    </audio>
-                </li>
-                <li>
-                    <a href="#" data-toggle="modal" data-target="#settings-modal">
-                        <img id="settings-img" src="images/ic_settings_black_24px.svg" height="20" width="20"/>
-                    </a>
-                </li>
-                <li id="onlineplayers" class="hidden">
-                    <a href="#" title="Number of online players" >Online <span class="badge" id="onlineplayersbadge">0</span></a>
-                </li>
-                <li>
-                    <button id="login-button" type="button" class="btn btn-default navbar-btn" onclick="server.init()">Sign up / Login</button>
-                </li>
-            </ul>
-        </div><!--/.nav-collapse -->
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+              aria-expanded="false" aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
     </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li><a href="#" data-toggle="modal" data-target="#help-modal">Help</a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown"
+             title="Create a new empty board to play locally" aria-haspopup="true" aria-expanded="false"
+             id="scratchsize"> Scratch Board
+            <span class="caret"></span></a>
+
+          <ul class="dropdown-menu">
+            <li><a href="#" onclick="scratchbutton(3);">3x3</a></li>
+            <li><a href="#" onclick="scratchbutton(4);">4x4</a></li>
+            <li><a href="#" onclick="scratchbutton(5);">5x5</a></li>
+            <li><a href="#" onclick="scratchbutton(6);">6x6</a></li>
+            <li><a href="#" onclick="scratchbutton(7);">7x7</a></li>
+            <li><a href="#" onclick="scratchbutton(8);">8x8</a></li>
+          </ul>
+        </li>
+        <!--<li><a  class="visible-xs-block" title="Reverse view" class="hidden-xs" href="#" onclick="board.reverseboard(true)">Flip view</a></li>-->
+        <li><a id="loadtps" href="#" onclick="loadtpn()">Load TPS</a></li>
+        <li>
+          <a id="creategame" href="#" title="Create online game" onclick="$('#creategamemodal').modal('show')">New
+            Game</a>
+        </li>
+        <li class="dropdown">
+          <a id="joingame" href="#" class="dropdown-toggle" role="button" data-toggle="dropdown"
+             title="Accept a seek" aria-haspopup="true" aria-expanded="false"> Join game
+            <span class="badge" id="seekcount">0</span>
+            <span class="caret"></span></a>
+          <ul id="seeklist" class="dropdown-menu scrollable-menu">
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a id="watch" href="#" class="dropdown-toggle" role="button" data-toggle="dropdown"
+             title="Observe a game" aria-haspopup="true" aria-expanded="false"> Watch
+            <span class="badge" id="gamecount">0</span>
+            <span class="caret"></span></a>
+          <ul id="gamelist" class="dropdown-menu scrollable-menu">
+          </ul>
+        </li>
+        <li><a target="_blank" title="Search for previous games" href="http://www.playtak.com/games">History</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+          <a href="#" title="Mute/Un mute" role="button" onclick="volume_change()">
+            <!--<button type="button" class="btn btn-default">-->
+            <img id="volume-img" class="icon" src="resources/images/icons/ic_volume_up_black_24px.svg"
+                 height="20" width="20"/>
+            <!--</button>-->
+          </a>
+          <audio id="move-sound">
+            <source src="resources/audio/move.mp3" type='audio/mpeg'/>
+            <source src="resources/audio/move.ogg" type='audio/ogg'/>
+          </audio>
+          <audio id="chime-sound">
+            <source src="resources/audio/chime.mp3" type='audio/mpeg'/>
+            <source src="resources/audio/chime.ogg" type='audio/ogg'/>
+          </audio>
+        </li>
+        <li>
+          <a href="#" data-toggle="modal" data-target="#settings-modal">
+            <img id="settings-img" class="icon" src="resources/images/icons/ic_settings_black_24px.svg"
+                 height="20" width="20"/>
+          </a>
+        </li>
+        <li id="onlineplayers" class="hidden">
+          <a href="#" title="Number of online players">Online <span class="badge" id="onlineplayersbadge">0</span></a>
+        </li>
+        <li>
+          <button id="login-button" type="button" class="btn btn-default navbar-btn" onclick="server.init()">Sign up /
+            Login
+          </button>
+        </li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div>
 </nav>

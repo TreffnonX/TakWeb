@@ -34,41 +34,41 @@ function loadSettings() {
   // load white piece style.
   if (localStorage.getItem('piece_style_white')!==null) {
     var styleName = localStorage.getItem('piece_style_white');
-    white_piece_tex_name = 'images/pieces/white_' + styleName + '_pieces.png';
+    white_piece_tex_name = 'resources/images/pieces/white_' + styleName + '_pieces.png';
     if (new THREE.TextureLoader().load(white_piece_tex_name)===null)
     {
       styleName = 'simple';
       localStorage.setItem('piece_style_white', styleName);
-      white_piece_tex_name = 'images/pieces/white_' + styleName + '_pieces.png';
+      white_piece_tex_name = 'resources/images/pieces/white_' + styleName + '_pieces.png';
     }
-    white_caps_tex_name = 'images/pieces/white_' + styleName + '_caps.png';
+    white_caps_tex_name = 'resources/images/pieces/white_' + styleName + '_caps.png';
     document.getElementById('piece-style-white-' + styleName).checked = true;
   }
   
   // load black piece style.
   if (localStorage.getItem('piece_style_black')!==null) {
     var styleName = localStorage.getItem('piece_style_black');
-    black_piece_tex_name = 'images/pieces/black_' + styleName + '_pieces.png';
+    black_piece_tex_name = 'resources/images/pieces/black_' + styleName + '_pieces.png';
     if (new THREE.TextureLoader().load(black_piece_tex_name)===null)
     {
       styleName = 'simple';
       localStorage.setItem('piece_style_black', styleName);
-      black_piece_tex_name = 'images/pieces/black_' + styleName + '_pieces.png';
+      black_piece_tex_name = 'resources/images/pieces/black_' + styleName + '_pieces.png';
     }
-    black_piece_tex_name = 'images/pieces/black_' + styleName + '_pieces.png';
-    black_caps_tex_name = 'images/pieces/black_' + styleName + '_caps.png';
+    black_piece_tex_name = 'resources/images/pieces/black_' + styleName + '_pieces.png';
+    black_caps_tex_name = 'resources/images/pieces/black_' + styleName + '_caps.png';
     document.getElementById('piece-style-black-' + styleName).checked = true;
   }
   
   // load white board style.
   if (localStorage.getItem('board_style_white')!==null) {
     var styleName = localStorage.getItem('board_style_white');
-    white_square_tex_name = 'images/board/white_' + styleName + '.png';
+    white_square_tex_name = 'resources/images/board/white_' + styleName + '.png';
     if (new THREE.TextureLoader().load(white_square_tex_name)===null)
     {
       styleName = 'simple';
       localStorage.setItem('board_style_white', styleName);
-      white_square_tex_name = 'images/board/white_' + styleName + '_pieces.png';
+      white_square_tex_name = 'resources/images/board/white_' + styleName + '_pieces.png';
     }
     document.getElementById('board-style-white-' + styleName).checked = true;
   }
@@ -76,20 +76,43 @@ function loadSettings() {
   // load black board style.
   if (localStorage.getItem('board_style_back')!==null) {
     var styleName = localStorage.getItem('board_style_back');
-    black_square_tex_name = 'images/board/black_' + styleName + '.png';
+    black_square_tex_name = 'resources/images/board/black_' + styleName + '.png';
     if (new THREE.TextureLoader().load(black_square_tex_name)===null)
     {
       styleName = 'simple';
       localStorage.setItem('board_style_black', styleName);
-      black_square_tex_name = 'images/board/black_' + styleName + '_pieces.png';
+      black_square_tex_name = 'resources/images/board/black_' + styleName + '_pieces.png';
     }
     document.getElementById('board-style-black-' + styleName).checked = true;
+
+    // load notation position and height.
+    if (localStorage.getItem('notation_position')!==null)
+    {
+      document.getElementById('notation_area').style.top = localStorage.getItem('notation_position') + "px";
+    }
+    if (localStorage.getItem('notation_height')!==null)
+    {
+      document.getElementById('notationbar').style.height = localStorage.getItem('notation_height') + "px";
+    }
+
+    notationSizeCheck();
   }
 
   // load the setting for antialiasing.
   if(localStorage.getItem('antialiasing_mode')==='true') {
     document.getElementById('antialiasing-checkbox').checked = true;
     antialiasing_mode = true;
+  }
+
+  // load the setting for ui-style.
+  if (!localStorage.getItem('dark_ui'))
+  {
+    localStorage.setItem('dark_ui', 'true');
+  }
+  if(localStorage.getItem('dark_ui')==='true')
+  {
+    document.getElementById('uistyle-checkbox').checked = true;
+    checkboxUIStyle();
   }
   
   // load whether or not the 'Send' button should be hidden.
@@ -162,8 +185,8 @@ function sliderPieceSize(newSize) {
  */
 function radioPieceStyleWhite(styleName) {
   document.getElementById('piece-style-white-' + styleName).checked = true;
-  white_piece_tex_name = 'images/pieces/white_' + styleName + '_pieces.png';
-  white_caps_tex_name = 'images/pieces/white_' + styleName + '_caps.png';
+  white_piece_tex_name = 'resources/images/pieces/white_' + styleName + '_pieces.png';
+  white_caps_tex_name = 'resources/images/pieces/white_' + styleName + '_caps.png';
   localStorage.setItem('piece_style_white', styleName);
   board.updatepieces();
 }
@@ -174,8 +197,8 @@ function radioPieceStyleWhite(styleName) {
  */
 function radioPieceStyleBlack(styleName) {
   document.getElementById('piece-style-black-' + styleName).checked = true;
-  black_piece_tex_name = 'images/pieces/black_' + styleName + '_pieces.png';
-  black_caps_tex_name = 'images/pieces/black_' + styleName + '_caps.png';
+  black_piece_tex_name = 'resources/images/pieces/black_' + styleName + '_pieces.png';
+  black_caps_tex_name = 'resources/images/pieces/black_' + styleName + '_caps.png';
   localStorage.setItem('piece_style_black', styleName);
   board.updatepieces();
 }
@@ -186,7 +209,7 @@ function radioPieceStyleBlack(styleName) {
  */
 function radioBoardStyleBlack(styleName) {
   document.getElementById('board-style-black-' + styleName).checked = true;
-  black_square_tex_name = 'images/board/black_' + styleName + '.png';
+  black_square_tex_name = 'resources/images/board/black_' + styleName + '.png';
   localStorage.setItem('board_style_back', styleName);
   board.updateboard();
 }
@@ -197,7 +220,7 @@ function radioBoardStyleBlack(styleName) {
  */
 function radioBoardStyleWhite(styleName) {
   document.getElementById('board-style-white-' + styleName).checked = true;
-  white_square_tex_name = 'images/board/white_' + styleName + '.png';
+  white_square_tex_name = 'resources/images/board/white_' + styleName + '.png';
   localStorage.setItem('board_style_white', styleName);
   board.updateboard();
 }
@@ -211,6 +234,33 @@ function checkboxAntialiasing() {
     localStorage.setItem('antialiasing_mode', 'true');
   } else {
     localStorage.setItem('antialiasing_mode', 'false');
+  }
+}
+
+/**
+ * Notify checkbox change for checkbox:
+ *   UI-Style.
+ */
+function checkboxUIStyle()
+{
+  if (document.getElementById('uistyle-checkbox').checked) {
+    localStorage.setItem('dark_ui', 'true');
+    document.getElementById('ui-css').href = 'resources/css/dark.css';
+    var icons = document.getElementsByClassName('icon');
+    for (var i = 0; i < icons.length; ++i)
+    {
+      icons[i].src = icons[i].src.replace(new RegExp('/icons/'), '/icons_inv/');
+    }
+    icon_path = 'resources/images/icons_inv/';
+  } else {
+    localStorage.setItem('dark_ui', 'false');
+    document.getElementById('ui-css').href = 'resources/css/classic.css';
+    var icons = document.getElementsByClassName('icon');
+    for (var i = 0; i < icons.length; ++i)
+    {
+      icons[i].src = icons[i].src.replace(new RegExp('/icons_inv/'), '/icons/');
+    }
+    icon_path = 'resources/images/icons/';
   }
 }
 
