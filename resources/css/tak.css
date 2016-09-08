@@ -211,7 +211,7 @@ input[type=range]::-webkit-slider-runnable-track {
   width: 200px;
   text-align: left;
   overflow: hidden;
-  background-color: #e7e7e7;
+  background-color: #e0e0e0;
 }
 .head {
   cursor: ns-resize;
@@ -223,8 +223,12 @@ input[type=range]::-webkit-slider-runnable-track {
   border-bottom-style: solid;
   border-bottom-color: #888;
   border-bottom-width: 1px;
+  background-color: #eee;
   overflow: auto;
   overflow-x: hidden;
+}
+.moveno {
+  color: #777;
 }
 #alertbox {
   position: absolute;
@@ -327,6 +331,7 @@ input[type=range]::-webkit-slider-runnable-track {
 }
 .player1-name, .player2-name {
   padding: 0 2px;
+  font-weight: bold !important;
   display: inline-block;
   color: black;
 }
@@ -346,4 +351,21 @@ input[type=range]::-webkit-slider-runnable-track {
 }
 .dropdown-menu > li > a {
   cursor: pointer;
+}
+.list-header {
+  display: inline-block;
+  white-space: nowrap;
+  text-align: center;
+}
+.list-head-line {
+  padding-left: 20px;
+  padding-right: 20px;
+  display: table;
+  width: 100%;
+  white-space: nowrap;
+  background-color: #ddd;
+  color: #777;
+}
+.botcount {
+  color: #bbb;
 }

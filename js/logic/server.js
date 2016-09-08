@@ -1,5 +1,5 @@
 // server greeting message.
-var server_greeting = 'TreffnonX-05.09.16';
+var server_greeting = 'TreffnonX-08.09.16';
 var icon_path = 'resources/images/icons/';
 
 var chat_time;
@@ -57,18 +57,24 @@ var server = {
           document.getElementById('login-button').textContent = 'Sign up / Login';
           $('#onlineplayers').addClass('hidden');
           document.getElementById("onlineplayersbadge").innerHTML = "0";
-          document.getElementById("seekcount").innerHTML = "0";
-          document.getElementById("gamecount").innerHTML = "0";
+          document.getElementById("seekcount").innerHTML = "0 <span class='botcount'>| 0</span>";
+          document.getElementById("gamecount").innerHTML = "0 <span class='botcount'>| 0</span>";
           document.getElementById("scratchsize").disabled = false;
           board.scratch = true;
           board.observing = false;
           board.gameno = 0;
           document.title = "Tak";
           $('#seeklist').children().each(function() {
+            if (!this.hasClass('list-head-line') && !this.hasClass('seeklist-botline'))
+            {
               this.remove();
+            }
           });
           $('#gamelist').children().each(function() {
+            if (!this.hasClass('list-head-line') && !this.hasClass('gamelist-botline'))
+            {
               this.remove();
+            }
           });
           stopTime();
           alert("info", "You're disconnected from server");
@@ -185,29 +191,55 @@ var server = {
           var p2 = spl[5].split(",")[0];
           var sz = spl[6].split(",")[0];
 
-          p1 = "<span class='playername'>"+p1+"</span>";
-          p2 = "<span class='playername'>"+p2+"</span>";
-          sz = "<span class='badge'>"+sz+"</span>";
+          var botGame = p1.trim().toLowerCase().endsWith('bot') || p2.trim().toLowerCase().endsWith('bot');
 
-          //var val = spl[3] + " vs " + spl[5].split(",")[0] + " " + spl[6].split(",")[0] + " " + m+':'+s;
-          var val = p1 + " vs " + p2 + " " + sz + " " + m+":"+s;
+          p1 = "<span class='playername p1" + (p1.trim().toLowerCase().endsWith('bot') ? "'" : " nonbot'")
+              + " style='display: inline-block; width: 120px; text-align: right;'>" + p1 + "</span>";
+          p2 = "<span class='playername p2" + (p2.trim().toLowerCase().endsWith('bot') ? "'" : " nonbot'")
+              + "style='display: inline-block; width: 120px;'>" + p2 + "</span>";
+          sz = "<span class='badge' style='display: inline-block; width: 40px; text-align: center;'>"
+              + sz + "</span>";
+          var vs = "<span style='display: inline-block; width: 22px; text-align: center; font-size: 12px; "
+              + "'>vs</span>";
+          var time = "<span style='display: inline-block; width: 60px; text-align: center;'>"
+              + m + ":" + s + "</span>";
+          inc = "<span style='display: inline-block; width: 40px;'>+" + inc + "s</span>";
 
-          var li = $('<li/>').addClass('game'+no).appendTo($('#gamelist'));
-          $('<a/>').append(val).click(function() {server.observegame(spl[2].split("Game#")[1]);}).
-                                appendTo(li);
+          var val = p1 + vs + p2 + sz + time + inc;
+
+          var li = document.createElement('li');
+          var a = document.createElement('a');
+          li.className += ' game' + no;
+          a.innerHTML = val;
+          a.onclick = function() {
+              server.observegame(spl[2].split("Game#")[1]);
+            };
+          li.appendChild(a);
+          document.getElementById('gamelist').insertBefore(li,
+              botGame ? null : document.getElementById('gamelist-botline'));
 
           var op = document.getElementById("gamecount");
-          op.innerHTML = Number(op.innerHTML)+1;
+          var humans = parseInt(new RegExp('^[-]?\\d+').exec(op.innerHTML));
+          var bots = parseInt(new RegExp('[-]?\\d+(?=\\</span\\>)').exec(op.innerHTML));
+          op.innerHTML = botGame ? humans + ' <span class="botcount">| ' + ++bots + '</span>'
+              : ++humans + ' <span class="botcount">| ' + bots + '</span>';
       }
       else if (e.startsWith("GameList Remove Game#")) {
           //GameList Remove Game#1 player1 vs player2, 4x4, 180, 0 half-moves played, player1 to move
           var spl = e.split(" ");
 
           var no = spl[2].split("Game#")[1];
-          $('.game'+no).remove();
+          var game = $('.game' + no);
+          var playerName1 = game.find('.p1').html().toString().trim();
+          var playerName2 = game.find('.p2').html().toString().trim();
+          var botGame = playerName1.toLowerCase().endsWith('bot') || playerName2.toLowerCase().endsWith('bot');
+          game.remove();
 
           var op = document.getElementById("gamecount");
-          op.innerHTML = Number(op.innerHTML)-1;
+          var humans = parseInt(new RegExp('^\\d+').exec(op.innerHTML));
+          var bots = parseInt(new RegExp('\\d+(?=\\</span\\>)').exec(op.innerHTML));
+          op.innerHTML = botGame ? humans + ' <span class="botcount">| ' + --bots + '</span>'
+              : --humans + ' <span class="botcount">| ' + bots + '</span>';
       }
       else if (e.startsWith("Game#")) {
         var spl = e.split(" ");
@@ -496,17 +528,36 @@ var server = {
           if(spl.length == 8) {
               img = icon_path + (spl[7] === 'W' ? 'circle_white.svg' : 'circle_black.svg');
           }
-          img = '<img src="'+img+'"/>';
+          img = '<img src="' + img + '"/>';
 
-          p = "<span class='playername'>"+p+"</span>";
-          sz = "<span class='badge'>"+sz+"</span>";
+          var botGame = p.trim().toLowerCase().endsWith('bot');
 
-          var li = $('<li/>').addClass('seek'+no).appendTo($('#seeklist'));
-          $('<a/>').append(img + " " + p + " " + sz + " " + m+":"+s+" +"+inc+"s")
-              .click(function() {server.acceptseek(spl[2])}).appendTo(li);
+          p = "<span class='playername " + (botGame ? '' : 'nonbot')
+              + "' style='display: inline-block; width: 120px; text-align: center'>" + p + "</span>";
+          sz = "<span class='badge' style='display: inline-block; width: 40px; text-align: center;'>"
+              + sz + "</span>";
+          var time = "<span style='display: inline-block; width: 60px; text-align: center;'>"
+              + m + ":" + s + "</span>";
+          inc = "<span style='display: inline-block; width: 40px;'>+" + inc + "s</span>";
+
+          var val = img + p + sz + time + inc;
+
+          var li = document.createElement('li');
+          var a = document.createElement('a');
+          li.className += ' seek' + no;
+          a.innerHTML = val;
+          a.onclick = function() {
+              server.acceptseek(spl[2]);
+            };
+          li.appendChild(a);
+          document.getElementById('seeklist').insertBefore(li,
+              botGame ? null : document.getElementById('seeklist-botline'));
 
           var op = document.getElementById("seekcount");
-          op.innerHTML = Number(op.innerHTML)+1;
+          var humans = parseInt(new RegExp('[-]?\\d+(?= )').exec(op.innerHTML.toString().trim()));
+          var bots = parseInt(new RegExp('[-]?\\d+(?=\\</span\\>)').exec(op.innerHTML.toString().trim()));
+          op.innerHTML = botGame ? humans + ' <span class="botcount">| ' + ++bots + '</span>'
+              : ++humans + ' <span class="botcount">| ' + bots + '</span>';
       }
       //remove seek
       else if (e.startsWith("Seek remove")) {
@@ -514,10 +565,16 @@ var server = {
           var spl = e.split(" ");
 
           var no = spl[2];
-          $('.seek'+no).remove();
+          var game = $('.seek' + no);
+          var playerName = game.find('.playername').html().toString().trim();
+          var botGame = playerName.toLowerCase().endsWith('bot')
+          game.remove();
 
           var op = document.getElementById("seekcount");
-          op.innerHTML = Number(op.innerHTML)-1;
+          var humans = parseInt(new RegExp('^\\d+').exec(op.innerHTML.toString().trim()));
+          var bots = parseInt(new RegExp('\\d+(?=\\</span\\>)').exec(op.innerHTML.toString().trim()));
+          op.innerHTML = botGame ? humans + ' <span class="botcount">| ' + --bots + '</span>'
+              : --humans + ' <span class="botcount">| ' + bots + '</span>';
       }
       //Online players
       else if (e.startsWith("Online ")) {

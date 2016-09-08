@@ -36,17 +36,38 @@
         <li class="dropdown">
           <a id="joingame" href="#" class="dropdown-toggle" role="button" data-toggle="dropdown"
              title="Accept a seek" aria-haspopup="true" aria-expanded="false"> Join game
-            <span class="badge" id="seekcount">0</span>
+            <span class="badge" id="seekcount">0 <span class="botcount">| 0</span></span>
             <span class="caret"></span></a>
           <ul id="seeklist" class="dropdown-menu scrollable-menu">
+            <li class="list-head-line"><!--
+              --><img src="resources/images/icons_inv/circle_all.svg"/><!--
+              --><span class="list-header" style="text-align: center; width: 120px;">seeking</span><!--
+              --><span class="list-header" style="width: 40px;">size</span><!--
+              --><span class="list-header" style="width: 60px;">time</span><!--
+              --><span class="list-header">inc.</span><!--
+            --></li>
+            <li id="seeklist-botline" class="list-head-line" style="margin-top: 10px;"><!--
+              --><span class="list-header" style="width: 276px;">bots</span><!--
+            --></li>
           </ul>
         </li>
         <li class="dropdown">
           <a id="watch" href="#" class="dropdown-toggle" role="button" data-toggle="dropdown"
              title="Observe a game" aria-haspopup="true" aria-expanded="false"> Watch
-            <span class="badge" id="gamecount">0</span>
+            <span class="badge" id="gamecount">0 <span class="botcount">| 0</span></span>
             <span class="caret"></span></a>
           <ul id="gamelist" class="dropdown-menu scrollable-menu">
+            <li class="list-head-line"><!--
+              --><span class="list-header" style="text-align: right; width: 120px;">white</span><!--
+              --><span class="list-header" style="width: 22px;">&#160;</span><!--
+              --><span class="list-header" style="text-align: left; width: 120px;">black</span><!--
+              --><span class="list-header" style="width: 40px;">size</span><!--
+              --><span class="list-header" style="width: 60px;">time</span><!--
+              --><span class="list-header">inc.</span><!--
+            --></li>
+            <li id="gamelist-botline" class="list-head-line" style="margin-top: 10px;"><!--
+              --><span class="list-header" style="width: 402px;">bot games</span><!--
+            --></li>
           </ul>
         </li>
         <li><a target="_blank" title="Search for previous games" href="http://www.playtak.com/games">History</a></li>

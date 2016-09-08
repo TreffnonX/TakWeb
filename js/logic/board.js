@@ -1039,6 +1039,7 @@ var board = {
             var row = ol.insertRow();
             var cell0 = row.insertCell(0);
             cell0.innerHTML = Math.floor(this.movecount / 2 + 1) + '.';
+            cell0.className += 'moveno';
             var cell1 = row.insertCell(1);
             row.insertCell(2);
             cell1.innerHTML = '<a href="#" onclick="board.showmove('
