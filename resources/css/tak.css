@@ -109,18 +109,22 @@ a, a:focus, a:active {
 .playername {
   font-weight: bold;
 }
+.chat-box {
+  background-color: #e7e7e9;
+}
 #chat-server {
   padding: 3px;
+  margin-top: 3px;
   word-wrap: break-word;
   background-color: #e7e7e9;
-  height: calc(100% - 30px);
+  height: calc(100% - 33px);
   overflow-y: auto;
 }
 .private-msg {
-  color: #be47d7;
+  color: #8b1f70;
 }
 .game-msg {
-  color: #417e39;
+  color: #2f8323;
 }
 .optlist a {
   margin-top: 2px;
@@ -131,6 +135,7 @@ a, a:focus, a:active {
   padding: 0px;
 }
 .chatname {
+  cursor: pointer;
   font-weight: bold;
   color: #222;
 }
@@ -458,4 +463,33 @@ input[type=range]::-webkit-slider-runnable-track {
 }
 .botcount {
   color: #bbb;
+}
+#context-menu {
+  display: none;
+  z-index: 9999;
+  position: fixed;
+  top: 10px;
+  left: 0;
+  background-color: #ddd;
+  border: 1px solid #888;
+  box-shadow: 0 0 8px #bbb;
+  overflow: hidden;
+}
+#context-menu:focus {
+  display: block;
+}
+#context-menu-list {
+  margin: 0;
+  padding: 4px 0 4px 0;
+  list-style-type: none;
+  list-style-position: inside;
+}
+#context-menu-list li {
+  cursor: pointer;
+  padding: 4px 12px 4px 12px;
+  color: #444;
+}
+#context-menu-list li:hover {
+  color: #222;
+  background-color: #ccc;
 }

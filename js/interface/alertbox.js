@@ -1,4 +1,5 @@
 function alert(type, msg) {
+  console.log('Alert: ' + msg);
   $('#alert-text').text(msg);
   var $alert = $('#alert');
   $alert.removeClass("alert-success alert-info alert-warning alert-danger");
@@ -12,6 +13,7 @@ function alert(type, msg) {
   alert2(type, msg);
 }
 function alert2(type, msg) {
+  console.log('Alert: ' + msg)
   $('#alert-text2').text(msg);
   var $alert = $('#alert2');
   $alert.removeClass("alert-success alert-info alert-warning alert-danger");

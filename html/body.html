@@ -5,6 +5,9 @@
   <div class="device-md hidden-md"></div>
   <div class="device-lg hidden-lg"></div>
 
+  <!-- Context menu -->
+  <div id="context-menu" tabindex="100" ng-include="'html/overlay/playerContextMenu.html'"></div>
+
   <!-- Static navbar -->
   <div ng-include="'html/view/navBar.html'"></div>
 
@@ -18,7 +21,7 @@
   <canvas id="gamecanvas"></canvas>
 
   <!-- Alert box -->
-  <div ng-include="'html/overlay/alertBox.html'"></div>
+  <div id="alertbox" ng-include="'html/overlay/alertBox.html'"></div>
 
   <!-- Create game window -->
   <div id="creategamemodal" class="modal fade" role="dialog" ng-include="'html/overlay/createGame.html'"></div>

@@ -60,6 +60,7 @@ body {
   border-style: solid;
   border-width: 1px;
   border-color: #333;
+  background-color: #1a1a1a;
 }
 .chat-badge {
   background-image: url("../../images/icons_inv/badge_right.svg");
@@ -71,6 +72,9 @@ body {
 }
 .chatname {
   color: #e1c99a;
+}
+.chatname:hover {
+  color:
 }
 .selectplayer, .selectplayer #player-me-name, .selectplayer #player-opp-name {
   color: black;
@@ -155,4 +159,21 @@ body {
 }
 .badge .nonbot {
   color: #f2e0bd;
+}
+#context-menu {
+  background-color: #222;
+  border: 1px solid #060606;
+  box-shadow: 0 0 8px #111;
+}
+#context-menu-list li {
+  color: #aaa;
+}
+#context-menu-list li:hover {
+  color: #ccc;
+  background-color: #555;
+}
+.alert-info {
+  color: #863811;
+  background-color: #ebb76e;
+  border-color: #d28b25;
 }

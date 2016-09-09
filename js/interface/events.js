@@ -422,4 +422,34 @@ function initInterface()
       console.log('Lost drag target.');
     }
   });
+
+  /**
+   * Initialize context menu.
+   */
+  document.getElementById('context-menu').open = function (target, event)
+  {
+    // open and position.
+    event = event || window.event;
+    this.style.display = 'block';
+    this.style.top = event.clientY + 'px';
+    this.style.left = event.clientX + 'px';
+    document.getElementById('context-menu').focus();
+    this.style.display = '';
+
+    // set up list.
+    this.target = /^[^:]*/.exec(target).toString();
+    document.getElementById('whisper-menu-option').innerHTML = '.w ' + this.target;
+    document.getElementById('private-chat-option').innerHTML = 'private chat';
+  };
+  document.getElementById('whisper-menu-option').onclick = function (event) {
+    var chat = $('#chat-me');
+    var chatText = chat.val();
+    chat.val(this.innerHTML + (chatText.startsWith(' ') ? '' : ' ') + chatText);
+    document.getElementById('chat-me').focus();
+  };
+  document.getElementById('private-chat-option').onclick = function (event) {
+    var mode = 'private-' + document.getElementById('context-menu').target;
+    provideChatRoom(mode);
+    chatModeChange(document.getElementById('private-chat-tab'), mode);
+  }
 }

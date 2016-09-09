@@ -477,7 +477,7 @@ var server = {
           var msg = e.split("CmdReply ")[1];
           var $cs = $('#chat-server');
 
-          $cs.append('<span class="cmdreply">'+msg+'</span><br>');
+          $cs.append('<span class="cmdreply">' + msg + '</span><br>');
           $cs.scrollTop($cs[0].scrollHeight);
       }
       //new seek

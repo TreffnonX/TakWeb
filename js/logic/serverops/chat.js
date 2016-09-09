@@ -75,7 +75,8 @@ function printChatMessage (types, user, message)
   message = message.linkify(options);
 
   // highlight own name.
-  if(message.indexOf(this.myname) > -1) {
+  if (message.indexOf(this.myname) > -1)
+  {
     var tmp = message.split(this.myname);
     message = tmp[0] + '<span class="chatmyname">' + this.myname + '</span>' + tmp[1];
   }
@@ -85,6 +86,21 @@ function printChatMessage (types, user, message)
   var $cs = $('#chat-server');
   $cs.append(chatMessage);
   $cs.scrollTop($cs[0].scrollHeight);
+
+  // attach context menu to player names.
+  var playerName = chatMessage.children()[1];
+  playerName.addEventListener('click', function (event) {
+    var player = this.innerHTML.toString();
+    var contextMenu = document.getElementById('context-menu');
+    contextMenu.open(player, event);
+  }, false);
+
+  $(playerName).on('contextmenu', function (event) {
+    event.preventDefault();
+    var player = this.innerHTML.toString();
+    var contextMenu = document.getElementById('context-menu');
+    contextMenu.open(player, event);
+  });
 
   // if private chat message, ensure dropdown entry.
   var match = / (private-|Game)(.*)$/.exec(types);
