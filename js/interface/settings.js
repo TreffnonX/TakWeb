@@ -245,7 +245,7 @@ function checkboxUIStyle()
 {
   if (document.getElementById('uistyle-checkbox').checked) {
     localStorage.setItem('dark_ui', 'true');
-    document.getElementById('ui-css').href = 'resources/css/dark.css';
+    document.getElementById('ui-css').href = 'resources/css/style/dark.css';
     var icons = document.getElementsByClassName('icon');
     for (var i = 0; i < icons.length; ++i)
     {
@@ -254,7 +254,7 @@ function checkboxUIStyle()
     icon_path = 'resources/images/icons_inv/';
   } else {
     localStorage.setItem('dark_ui', 'false');
-    document.getElementById('ui-css').href = 'resources/css/classic.css';
+    document.getElementById('ui-css').href = 'resources/css/style/classic.css';
     var icons = document.getElementsByClassName('icon');
     for (var i = 0; i < icons.length; ++i)
     {

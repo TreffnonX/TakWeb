@@ -2,8 +2,6 @@
 var server_greeting = 'TreffnonX-08.09.16';
 var icon_path = 'resources/images/icons/';
 
-var chat_time;
-
 var server = {
   connection: null,
   timeoutvar: null,
@@ -57,21 +55,23 @@ var server = {
           document.getElementById('login-button').textContent = 'Sign up / Login';
           $('#onlineplayers').addClass('hidden');
           document.getElementById("onlineplayersbadge").innerHTML = "0";
-          document.getElementById("seekcount").innerHTML = "0 <span class='botcount'>| 0</span>";
-          document.getElementById("gamecount").innerHTML = "0 <span class='botcount'>| 0</span>";
+          document.getElementById("seekcount").innerHTML =
+              "<span class='nonbot'>0 </span>&#183;<span class='botcount'> 0</span>";
+          document.getElementById("gamecount").innerHTML =
+              "<span class='nonbot'>0 </span>&#183;<span class='botcount'> 0</span>";
           document.getElementById("scratchsize").disabled = false;
           board.scratch = true;
           board.observing = false;
           board.gameno = 0;
           document.title = "Tak";
           $('#seeklist').children().each(function() {
-            if (!this.hasClass('list-head-line') && !this.hasClass('seeklist-botline'))
+            if (!/(list-head-line|seeklist-botline)/.exec(this.className))
             {
               this.remove();
             }
           });
           $('#gamelist').children().each(function() {
-            if (!this.hasClass('list-head-line') && !this.hasClass('gamelist-botline'))
+            if (!/(list-head-line|gamelist-botline)/.exec(this.className))
             {
               this.remove();
             }
@@ -164,7 +164,8 @@ var server = {
           var spl = e.split(" ");
           board.clear();
           board.init(Number(spl[5].split("x")[0]), "white", false, true);
-          board.gameno = Number(spl[1].split("Game#")[1]);
+          var gameno = Number(spl[1].split("Game#")[1]);
+          board.gameno = gameno;
           $('.player1-name:first').html(spl[2]);
           $('.player2-name:first').html(spl[4].split(",")[0]);
           document.title = "Tak: " + spl[2] + " vs " + spl[4];
@@ -174,6 +175,8 @@ var server = {
           var s = getZero(parseInt(time%60));
           $('.player1-time:first').html(m+':'+s);
           $('.player2-time:first').html(m+':'+s);
+
+          provideChatRoom('Game' + gameno, spl[2], spl[4].split(",")[0]);
       }
       else if (e.startsWith("GameList Add Game#")) {
           //GameList Add Game#1 player1 vs player2, 4x4, 180, 15, 0 half-moves played, player1 to move
@@ -219,10 +222,11 @@ var server = {
               botGame ? null : document.getElementById('gamelist-botline'));
 
           var op = document.getElementById("gamecount");
-          var humans = parseInt(new RegExp('^[-]?\\d+').exec(op.innerHTML));
-          var bots = parseInt(new RegExp('[-]?\\d+(?=\\</span\\>)').exec(op.innerHTML));
-          op.innerHTML = botGame ? humans + ' <span class="botcount">| ' + ++bots + '</span>'
-              : ++humans + ' <span class="botcount">| ' + bots + '</span>';
+          var humans = parseInt(new RegExp('-?\\d+(?= )').exec(op.innerHTML));
+          var bots = parseInt(new RegExp('-?\\d+(?=\\</s)').exec(op.innerHTML));
+          op.innerHTML = botGame ?
+                '<span class="nonbot">' + humans + ' </span>&#183;<span class="botcount"> ' + ++bots + '</span>'
+              : '<span class="nonbot">' + ++humans + ' </span>&#183;<span class="botcount"> ' + bots + '</span>';
       }
       else if (e.startsWith("GameList Remove Game#")) {
           //GameList Remove Game#1 player1 vs player2, 4x4, 180, 0 half-moves played, player1 to move
@@ -236,10 +240,11 @@ var server = {
           game.remove();
 
           var op = document.getElementById("gamecount");
-          var humans = parseInt(new RegExp('^\\d+').exec(op.innerHTML));
-          var bots = parseInt(new RegExp('\\d+(?=\\</span\\>)').exec(op.innerHTML));
-          op.innerHTML = botGame ? humans + ' <span class="botcount">| ' + --bots + '</span>'
-              : --humans + ' <span class="botcount">| ' + bots + '</span>';
+          var humans = parseInt(new RegExp('-?\\d+(?= )').exec(op.innerHTML));
+          var bots = parseInt(new RegExp('-?\\d+(?=\\</s)').exec(op.innerHTML));
+          op.innerHTML = botGame ?
+                '<span class="nonbot">' + humans + ' </span>&#183;<span class="botcount"> ' + --bots + '</span>'
+              : '<span class="nonbot">' + --humans + ' </span>&#183;<span class="botcount"> ' + bots + '</span>';
       }
       else if (e.startsWith("Game#")) {
         var spl = e.split(" ");
@@ -465,42 +470,8 @@ var server = {
           var msg = e.split("Error:")[1];
           alert("danger", "Server says: "+msg);
       }
-      else if (e.startsWith("Shout")) {
-          var msg = e.split("Shout ");
-          var name = msg[1].split('<')[1].split('>')[0];
-          var txt = msg[1].split('<'+name+'>')[1];
-          var clsname = 'chatname';
-
-          if (name=='IRC') {
-            name = txt.split('<')[1].split('>')[0];
-            txt = txt.split('<'+name+'>')[1];
-            clsname = clsname + ' ircname';
-          }
-
-          var $cs = $('#chat-server');
-
-          var now = new Date();
-          var hours = now.getHours();
-          var mins = now.getMinutes();
-          var cls = 'chattime'
-          if (localStorage.getItem('hide-chat-time')==='true') {
-            cls = cls + ' hidden';
-          }
-          $cs.append('<span class="'+cls+'">['+getZero(hours)+':'+getZero(mins)+'] </span>');
-          $cs.append('<span class="'+clsname+'">'+name+':</span>');
-          var options = {/* ... */};
-
-          txt = txt.linkify(options);
-
-          //someone said our name
-          if(txt.indexOf(this.myname) > -1) {
-            var tmp = txt.split(this.myname);
-            txt = tmp[0] + '<span class="chatmyname">'+this.myname+'</span>' + tmp[1];
-          }
-
-          $cs.append(txt+'<br>');
-
-          $cs.scrollTop($cs[0].scrollHeight);
+      else if (handleChatMessage(e)) {
+        // chat message was handled.
       }
       else if (e.startsWith("CmdReply")) {
           var msg = e.split("CmdReply ")[1];
@@ -554,10 +525,11 @@ var server = {
               botGame ? null : document.getElementById('seeklist-botline'));
 
           var op = document.getElementById("seekcount");
-          var humans = parseInt(new RegExp('[-]?\\d+(?= )').exec(op.innerHTML.toString().trim()));
-          var bots = parseInt(new RegExp('[-]?\\d+(?=\\</span\\>)').exec(op.innerHTML.toString().trim()));
-          op.innerHTML = botGame ? humans + ' <span class="botcount">| ' + ++bots + '</span>'
-              : ++humans + ' <span class="botcount">| ' + bots + '</span>';
+          var humans = parseInt(new RegExp('-?\\d+(?= )').exec(op.innerHTML.toString().trim()));
+          var bots = parseInt(new RegExp('-?\\d+(?=\\</s)').exec(op.innerHTML.toString().trim()));
+          op.innerHTML = botGame ?
+                '<span class="nonbot">' + humans + ' </span>&#183;<span class="botcount"> ' + ++bots + '</span>'
+              : '<span class="nonbot">' + ++humans + ' </span>&#183;<span class="botcount"> ' + bots + '</span>';
       }
       //remove seek
       else if (e.startsWith("Seek remove")) {
@@ -571,10 +543,11 @@ var server = {
           game.remove();
 
           var op = document.getElementById("seekcount");
-          var humans = parseInt(new RegExp('^\\d+').exec(op.innerHTML.toString().trim()));
-          var bots = parseInt(new RegExp('\\d+(?=\\</span\\>)').exec(op.innerHTML.toString().trim()));
-          op.innerHTML = botGame ? humans + ' <span class="botcount">| ' + --bots + '</span>'
-              : --humans + ' <span class="botcount">| ' + bots + '</span>';
+          var humans = parseInt(new RegExp('-?\\d+(?= )').exec(op.innerHTML));
+          var bots = parseInt(new RegExp('-?\\d+(?=\\</s)').exec(op.innerHTML));
+          op.innerHTML = botGame ?
+                '<span class="nonbot">' + humans + ' </span>&#183;<span class="botcount"> ' + --bots + '</span>'
+              : '<span class="nonbot">' + --humans + ' </span>&#183;<span class="botcount"> ' + bots + '</span>';
       }
       //Online players
       else if (e.startsWith("Online ")) {
@@ -585,11 +558,58 @@ var server = {
   },
   chat: function () {
       var msg = $('#chat-me').val();
-      console.log('msg= '+msg);
-      if(msg.startsWith('.'))
-        this.send(msg.slice(1));
-      else
-        this.send('Shout '+msg);
+
+      // directed chat message.
+      if (msg.startsWith('.'))
+      {
+        // segment message.
+        var match = /^.(\S*)/.exec(msg);
+        if (!match) return;
+        var type = match[1];
+        var toUser, body;
+        switch (type)
+        {
+          case 'w':
+          case 'whisper':
+            var match = /^.\S* (\S*) (.*)/.exec(msg);
+            if (!match) return;
+            toUser = match[1];
+            body = match[2];
+            msg = 'Tell ' + toUser + ' ' + body;
+            break;
+          case 'a':
+          case 'all':
+          case 'g':
+          case 'global':
+            match = /^.\S* (.*)/.exec(msg);
+            if (!match) return;
+            body = match[1];
+            msg = 'Shout ' + body;
+            break;
+          case 'r':
+          case 'respond':
+            match = /^.\S* (.*)/.exec(msg);
+            if (!match) return;
+            body = match[1];
+            msg = 'Tell ' + lastWhisper + ' ' + body;
+        }
+      }
+      else if (chatMode == 'global' || chatMode == 'all')
+      {
+        msg = 'Shout ' + msg;
+      }
+      else if (chatMode.startsWith('Game'))
+      {
+        var gameNo = /^(Game\d*)/.exec(chatMode)[1].toString();
+        msg = 'ShoutRoom ' + gameNo + ' ' + msg;
+      }
+      else if (chatMode.startsWith('private-'))
+      {
+        var other = /^private-(.*)/.exec(chatMode)[1].toString();
+        msg = 'Tell ' + other + ' ' + msg;
+      }
+      console.log('Sent to Server: ' + msg);
+      this.send(msg);
       $('#chat-me').val('');
   },
   send: function (e) {

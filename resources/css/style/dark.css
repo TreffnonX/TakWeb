@@ -25,12 +25,44 @@ body {
 #player-opp-name, #player-me-name, #player-name {
   color: #ddd;
 }
+#chat-tab-container {
+  border-color: #555;
+  background-color: #444;
+}
+.chat-tab {
+  border-color: #555;
+  background-color: #333;
+  border-left: 0;
+}
+.chat-tab:hover {
+  background-color: #444;
+}
+.selected-chat-tab {
+  background-color: #1a1a1a;
+}
+.selected-chat-tab:hover {
+  background-color: #282828;
+}
+.chat-list-item:hover {
+  background-color: #333;
+}
 #chat-server {
-  background-color: #111;
+  background-color: #1a1a1a;
   color: #ccc;
+}
+.private-msg {
+  color: #da9191;
+}
+.game-msg {
+  color: #86e1aa;
+}
+.chat-box {
   border-style: solid;
   border-width: 1px;
   border-color: #333;
+}
+.chat-badge {
+  background-image: url("../../images/icons_inv/badge_right.svg");
 }
 #chat-me {
   background-color: #161616;
@@ -120,4 +152,7 @@ body {
 }
 .nonbot {
   color: #e1c99a;
+}
+.badge .nonbot {
+  color: #f2e0bd;
 }

@@ -1,0 +1,15 @@
+<svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0 0h24v24H0z" fill="none"/>
+	<clipPath id="g-clip">
+      <path d="M12 1L12 12L1 17L1 1z"/>
+    </clipPath>
+    <path d="M20 22L20 18L17 16L20 7L20 6.5L14 2L10 2L4 6.5L4 7L7 16L4 18L4 22z" fill="black" transform="translate(-1 -1)" clip-path="url(#g-clip)"/>
+	<clipPath id="h-clip">
+      <path d="M10 3L10 14L21 19L21 3z"/>
+    </clipPath>
+	<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="black" transform="translate(3 -3)" clip-path="url(#h-clip)"/>
+	<clipPath id="i-clip">
+      <path d="M0 18L12 13L24 18L24 24L0 24z"/>
+    </clipPath>
+	<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" fill="black" clip-path="url(#i-clip)"/>
+</svg>

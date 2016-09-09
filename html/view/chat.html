@@ -8,6 +8,46 @@
   </div>
   <div id="chat">
     <div class="form-group height-full chat-box">
+      <div id="chat-tab-container">
+        <a href="#" id="all-chat-tab" class="chat-tab selected-chat-tab"
+           style="overflow:hidden;"
+           title="All chat. Displays all received messages. Writing here will write to global chat by default."
+           onclick="chatModeChange(this, 'all');">
+          <img class="icon" src="resources/images/icons/ic_all_black_24px.svg"/>
+        </a><!--
+     --><a href="#" id="global-chat-tab" class="chat-tab"
+           style="position:relative;overflow:hidden;"
+           title="Global chat. Messages starting with '.g ', '.global', '.a' or '.all' will be directed here."
+           onclick="chatModeChange(this, 'global');">
+          <img class="icon" src="resources/images/icons/ic_public_black_24px.svg"/>
+          <div id="global-badge" class="chat-badge"></div>
+        </a><!--
+     --><li class="dropdown chat-tab" style="border-right-width:0;padding:0;">
+        <a href="#" id="game-chat-tab" class="dropdown-toggle"
+           role="button" data-toggle="dropdown" title="Game chats. Spectators only."
+           aria-haspopup="true" aria-expanded="false"
+           style="display:block;width:100%;padding:4px;overflow:hidden;">
+          <img class="icon" src="resources/images/icons/ic_capstone_black_24px.svg"/>
+          <div id="game-badge" class="chat-badge"></div>
+        </a>
+        <ul id="game-chat-list" class="dropdown-menu dropdown-menu-right"
+            style="width:180px;transform:translate(45px,0);">
+        </ul>
+      </li><!--
+     --><li class="dropdown chat-tab" style="border-right-width:0;padding:0;">
+          <a href="#" id="private-chat-tab" class="dropdown-toggle"
+             role="button" data-toggle="dropdown"
+             title="Private chats. Messages starting with '.w name ' or '.whisper name ' will be directed here. '.r' or '.respond' will respond to the last private message received."
+             aria-haspopup="true" aria-expanded="false"
+             style="display:block;width:100%;padding:4px;overflow:hidden;">
+            <img class="icon" src="resources/images/icons/ic_person_black_24px.svg"/>
+            <div id="private-badge" class="chat-badge"></div>
+          </a>
+          <ul id="private-chat-list" class="dropdown-menu dropdown-menu-right"
+              style="width:180px;transform:translate(5px;0);">
+          </ul>
+        </li>
+      </div>
       <div id="chat-server"></div>
     </div>
     <form role="form" onsubmit="server.chat(); return false;" class="height-auto" style="margin-top: 4px;"

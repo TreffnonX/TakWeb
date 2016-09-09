@@ -380,11 +380,11 @@ function initInterface()
   // draggable objects.
   document.body.addEventListener('mousemove', function (event)
   {
-    // calculate offset.
     event = event || window.event;
     event.preventDefault();
     if (dragTarget)
     {
+      // calculate offset.
       var offset = { x: event.clientX - lastDragCoords.x, y: event.clientY - lastDragCoords.y };
       lastDragCoords = { x: event.clientX, y: event.clientY };
     }
@@ -411,4 +411,15 @@ function initInterface()
       localStorage.setItem('notation_height', newHeight);
     }
   }, false);
+
+  /**
+   * Drop the drag target, if the html element is left.
+   */
+  $(document.body).mouseleave(function () {
+    if (dragTarget)
+    {
+      dragTarget = null;
+      console.log('Lost drag target.');
+    }
+  });
 }

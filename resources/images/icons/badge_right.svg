@@ -1,0 +1,6 @@
+<svg height="16" width="16" xmlns="http://www.w3.org/2000/svg">
+    <clipPath id="g-clip">
+      <path d="M0 0H16V16H0z"/>
+    </clipPath>
+    <path d="M0 0H16V16z" stroke="#886f3e" stroke-width="1" fill="#e17f0c" clip-path="url(#g-clip)" />
+</svg>

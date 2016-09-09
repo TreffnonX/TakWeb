@@ -3,6 +3,9 @@ body {
   padding: 0px;
   overflow: hidden;
 }
+a, a:focus, a:active {
+  outline: 0;
+}
 #gamecanvas{
   display: block;
   position: absolute;
@@ -28,12 +31,96 @@ body {
   width: 180px;
   height: 80%;
 }
+#chat-tab-container {
+  height: 30px;
+  border-style: solid;
+  border-width: 0 0 1px 0 ;
+  border-color: #aaa;
+  background-color: #ccc;
+}
+.chat-tab {
+  display: inline-block;
+  text-align: center;
+  vertical-align: top;
+  cursor: pointer;
+  margin: 0;
+  padding: 4px;
+  border-width: 0 1px;
+  border-style: solid;
+  border-color: #aaa;
+  background-color: #d8d8d8;
+  width: 25%;
+  height: 29px;
+}
+.chat-tab img {
+  display: inline-block;
+  height: 20px;
+  width: 20px;
+}
+.chat-list-item {
+  position: relative;
+  width: 100%;
+  display: table;
+  white-space: normal;
+  overflow: hidden;
+}
+.chat-list-item:hover {
+  background-color: #ccc;
+}
+.chat-name {
+  display: table-cell;
+  padding: 4px 0 4px 20px;
+  vertical-align: middle;
+  overflow: hidden;
+}
+.chat-close {
+  display: table-cell;
+  text-align: center;
+  width: 20px;
+  padding: 4px 6px 4px 12px;
+  font-size: 21px;
+  text-shadow: 0 1px 0 #fff;
+  opacity: .4;
+  float: inherit;
+  vertical-align: middle;
+}
+.chat-close:hover {
+  background-color: #888;
+}
+.selected-chat-tab {
+  background-color: #e7e7e7;
+  height: 30px;
+}
+.chat-badge {
+  position: absolute;
+  display: inline-block;
+  z-index: 1;
+  opacity: 0;
+  top: 0;
+  right: 0;
+  width: 16px;
+  height: 16px;
+  background-image: url("../images/icons/badge_right.svg");
+}
+.private-chat-badge {
+  left: 0;
+  transform: rotate(-90deg);
+}
+.playername {
+  font-weight: bold;
+}
 #chat-server {
   padding: 3px;
   word-wrap: break-word;
   background-color: #e7e7e9;
-  height:100%;
+  height: calc(100% - 30px);
   overflow-y: auto;
+}
+.private-msg {
+  color: #be47d7;
+}
+.game-msg {
+  color: #417e39;
 }
 .optlist a {
   margin-top: 2px;
@@ -45,6 +132,7 @@ body {
 }
 .chatname {
   font-weight: bold;
+  color: #222;
 }
 .chatmyname {
   font-weight: bold;
@@ -87,6 +175,8 @@ body {
   background-color: #404040;
   line-height: 12px;
   width: 19px;
+  height: 42px;
+  overflow: hidden;
 }
 #help-modal ul li ul {
   font-weight: bold;

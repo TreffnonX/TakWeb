@@ -1,11 +1,11 @@
 <svg height="16" width="16" xmlns="http://www.w3.org/2000/svg">
     <circle cx="8" cy="8" r="6" stroke="#888" stroke-width="2" fill="black" />
     <clipPath id="g-clip">
-      <path d="M8 0L8 8L0 12L0 0L8 0"/>
+      <path d="M8 0L8 16L0 16L0 0L8 0"/>
     </clipPath>
     <circle cx="8" cy="8" r="6" stroke="#888" stroke-width="2" fill="white" clip-path="url(#g-clip)" />
-	<clipPath id="h-clip">
-      <path d="M8 16L8 8L16 12L16 16L8 16"/>
+	<clipPath id="b-clip">
+      <path d="M8 8L16 12L16 16L0 16L0 12L8 8"/>
     </clipPath>
-	<circle cx="8" cy="8" r="6" stroke="#888" stroke-width="2" fill="white" clip-path="url(#h-clip)" />
+	<circle cx="8" cy="8" r="6" stroke="#888" stroke-width="2" fill="#888" clip-path="url(#b-clip)" />
 </svg>
