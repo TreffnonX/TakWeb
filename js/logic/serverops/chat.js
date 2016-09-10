@@ -77,8 +77,8 @@ function printChatMessage (types, user, message)
   message = message.linkify(options);
 
   // highlight own name.
-  message = message.replace(new RegExp('(^|[^\\w\\d])(' + server.myname + ')($|[^\\W\\d])', 'gi'),
-      '$1<span class="chatmyname">$2</span>$3');
+  message = message.replace(new RegExp('(^|[^\\w\\d])(' + server.myname + ')(?=$|[^\\W\\d])', 'gi'),
+      '$1<span class="chatmyname">$2</span>');
   chatMessage.append(message + '<br>');
 
   // append message to chat.
