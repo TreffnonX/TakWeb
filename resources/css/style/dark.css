@@ -56,11 +56,19 @@ body {
 .game-msg {
   color: #86e1aa;
 }
+#game-chat-list, #private-chat-list {
+  border-bottom: 1px solid #444;
+}
 .chat-box {
   border-style: solid;
   border-width: 1px;
   border-color: #333;
   background-color: #1a1a1a;
+}
+.chat-msg:hover {
+  background-color: #222;
+  box-shadow: 0 0 8px #000;
+  outline-top: 1px solid #444;
 }
 .chat-badge {
   background-image: url("../../images/icons_inv/badge_right.svg");
@@ -70,11 +78,18 @@ body {
   color: #ddd;
   border-color: #333;
 }
+.time-label {
+  background-color: #444;
+  color: #bbb;
+}
 .chatname {
   color: #e1c99a;
 }
 .chatname:hover {
-  color:
+  color: #efe1c6;
+}
+.chatmyname {
+  color: #dc7835;
 }
 .selectplayer, .selectplayer #player-me-name, .selectplayer #player-opp-name {
   color: black;
@@ -128,12 +143,7 @@ body {
 .close:hover {
   color: #888;
 }
-.form-control {
-  background-color: #111;
-  border-color: #555;
-  color: #aaa;
-}
-.btn-default {
+.form-control, .btn-default {
   background-color: #111;
   border-color: #555;
   color: #aaa;

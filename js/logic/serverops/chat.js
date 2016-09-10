@@ -29,7 +29,7 @@ function handleChatMessage (message)
     case 'Told':
       var match = /^Told <(\S*)> (.*)$/.exec(message);
       if (!match) throw 'Malformed private message confirmation received: ' + message;
-      printChatMessage('private-msg private-' + match[1], server.myname, match[2]);
+      printChatMessage('private-msg private-' + match[1], 'to ' + match[1], match[2]);
     break;
     case 'CmdReply':
       var match = /^CmdReply (.*)$/.exec(message);
@@ -68,18 +68,17 @@ function printChatMessage (types, user, message)
   }
 
   // assemble message.
-  var chatMessage = $('<span>').addClass(types);
+  var chatMessage = $('<span>').addClass(types + ' chat-msg');
   chatMessage.append('<span class="' + cls + '">[' + getZero(hours) + ':' + getZero(mins) + '] </span>');
   chatMessage.append('<span class="' + clsname + '">' + user + ': </span>');
+  chatMessage.append('<span class="time-label-box"><span class="time-label">'
+      + getZero(hours) + ':' + getZero(mins) + '</span></span>');
   var options = {/* ... */};
   message = message.linkify(options);
 
   // highlight own name.
-  if (message.indexOf(this.myname) > -1)
-  {
-    var tmp = message.split(this.myname);
-    message = tmp[0] + '<span class="chatmyname">' + this.myname + '</span>' + tmp[1];
-  }
+  message = message.replace(new RegExp('\\b' + server.myname + '\\b', 'gi'),
+      '<span class="chatmyname">$&</span>');
   chatMessage.append(message + '<br>');
 
   // append message to chat.
@@ -89,18 +88,15 @@ function printChatMessage (types, user, message)
 
   // attach context menu to player names.
   var playerName = chatMessage.children()[1];
+  playerName.target = /\S*$/.exec(playerName.innerHTML.toString().trim()).toString();
   playerName.addEventListener('click', function (event) {
-    var player = this.innerHTML.toString();
-    var contextMenu = document.getElementById('context-menu');
-    contextMenu.open(player, event);
+    openContextMenu(this, event);
   }, false);
 
-  $(playerName).on('contextmenu', function (event) {
+  playerName.oncontextmenu = function (event) {
     event.preventDefault();
-    var player = this.innerHTML.toString();
-    var contextMenu = document.getElementById('context-menu');
-    contextMenu.open(player, event);
-  });
+    openContextMenu(this, event);
+  };
 
   // if private chat message, ensure dropdown entry.
   var match = / (private-|Game)(.*)$/.exec(types);
@@ -162,26 +158,27 @@ function chatModeChange(chatTab, mode)
       badges[i].style.opacity = 0;
     }
   }
-  if (mode == 'global')
+  else if (mode == 'global')
   {
     document.getElementById('global-badge').style.opacity = 0;
   }
-  if (mode.startsWith('private-'))
+  else if (mode.startsWith('private-') || mode.startsWith('Game'))
   {
     document.getElementById(mode + '-badge').style.opacity = 0;
-    var allPrivateClosed = true;
-    var allPrivates = document.getElementsByClassName('private-chat-badge');
-    for (var i = 0; i < allPrivates.length; ++i)
+    var type = (mode.startsWith('private') ? 'private' : 'game');
+    var allClosed = true;
+    var allRooms = document.getElementsByClassName(type + '-chat-badge');
+    for (var i = 0; i < allRooms.length; ++i)
     {
-      if (allPrivates[i].style.opacity != 0)
+      if (allRooms[i].style.opacity != 0)
       {
-        allPrivateClosed = false;
+        allClosed = false;
         break;
       }
     }
-    if (allPrivateClosed)
+    if (allClosed)
     {
-      document.getElementById('private-badge').style.opacity = 0;
+      document.getElementById(type + '-badge').style.opacity = 0;
     }
   }
 
@@ -192,13 +189,16 @@ function chatModeChange(chatTab, mode)
 /**
  * Provides a chat room, if required.
  */
-function provideChatRoom(room, player1, player2)
+function provideChatRoom(room, player1, player2, hideBadge)
 {
   // test, if room already exists.
   if (document.getElementById(room))
   {
     return;
   }
+
+  // prepare list item.
+  var listItem = document.createElement('li');
 
   // determine room type.
   var type = room.startsWith('private-') ? 'private' : 'game';
@@ -214,6 +214,7 @@ function provideChatRoom(room, player1, player2)
         + 'vs</span><span class="playername'
         + (player2.toLowerCase().endsWith('bot') ? '' : ' nonbot') + '" style="float:right;">' + player2
         + '</span>';
+    listItem.title = room;
   }
   name.innerHTML = type == 'private' ? /private-(.*)/.exec(room)[1].toString() : label;
   name.className = 'chat-name' + (type == 'private' ?
@@ -237,13 +238,13 @@ function provideChatRoom(room, player1, player2)
   };
 
   // new message badge.
+  var showBadge = !(hideBadge || chatMode == room || chatMode == 'all');
   var badge = document.createElement('div');
-  badge.style = "opacity:" + (chatMode == room || chatMode == 'all' ? 0 : 1) + ";";
+  badge.style = "opacity:" + (showBadge ? 1 : 0) + ";";
   badge.id = room + '-badge';
   badge.className = 'chat-badge ' + type + '-chat-badge';
 
   // assemble.
-  var listItem = document.createElement('li');
   listItem.id = room;
   listItem.appendChild(badge);
   listItem.appendChild(name);
@@ -251,4 +252,14 @@ function provideChatRoom(room, player1, player2)
   listItem.className = 'chat-list-item';
   var list = document.getElementById(type + '-chat-list');
   list.appendChild(listItem);
+}
+
+/**
+ * Open the context menu on a chat name.
+ */
+function openContextMenu (target, event)
+{
+  var player = target.target;
+  var contextMenu = document.getElementById('context-menu');
+  contextMenu.open(player, event);
 }

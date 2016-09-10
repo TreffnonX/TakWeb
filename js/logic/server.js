@@ -176,7 +176,7 @@ var server = {
           $('.player1-time:first').html(m+':'+s);
           $('.player2-time:first').html(m+':'+s);
 
-          provideChatRoom('Game' + gameno, spl[2], spl[4].split(",")[0]);
+          provideChatRoom('Game' + gameno, spl[2], spl[4].split(",")[0], true);
       }
       else if (e.startsWith("GameList Add Game#")) {
           //GameList Add Game#1 player1 vs player2, 4x4, 180, 15, 0 half-moves played, player1 to move
@@ -297,7 +297,7 @@ var server = {
           //Game#1 Undo
           else if (spl[1] === "Undo") {
             board.undo();
-            alert("info", "Game has been UNDOed by 1 move");
+            alert("info", "The last move has been UNDOne.");
             $('#undo').attr('src', icon_path + 'requestundo.svg');
           }
           //Game#1 OfferDraw
