@@ -29,7 +29,7 @@ function handleChatMessage (message)
     case 'Told':
       var match = /^Told <(\S*)> (.*)$/.exec(message);
       if (!match) throw 'Malformed private message confirmation received: ' + message;
-      printChatMessage('private-msg private-' + match[1], 'to ' + match[1], match[2]);
+      printChatMessage('private-msg private-' + match[1], '&#10149; ' + match[1], match[2]);
     break;
     case 'CmdReply':
       var match = /^CmdReply (.*)$/.exec(message);
