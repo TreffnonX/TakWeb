@@ -556,62 +556,6 @@ var server = {
           op.innerHTML = Number(e.split("Online ")[1]);
       }
   },
-  chat: function () {
-      var msg = $('#chat-me').val();
-
-      // directed chat message.
-      if (msg.startsWith('.'))
-      {
-        // segment message.
-        var match = /^.(\S*)/.exec(msg);
-        if (!match) return;
-        var type = match[1];
-        var toUser, body;
-        switch (type)
-        {
-          case 'w':
-          case 'whisper':
-            var match = /^.\S* (\S*) (.*)/.exec(msg);
-            if (!match) return;
-            toUser = match[1];
-            body = match[2];
-            msg = 'Tell ' + toUser + ' ' + body;
-            break;
-          case 'a':
-          case 'all':
-          case 'g':
-          case 'global':
-            match = /^.\S* (.*)/.exec(msg);
-            if (!match) return;
-            body = match[1];
-            msg = 'Shout ' + body;
-            break;
-          case 'r':
-          case 'respond':
-            match = /^.\S* (.*)/.exec(msg);
-            if (!match) return;
-            body = match[1];
-            msg = 'Tell ' + lastWhisper + ' ' + body;
-        }
-      }
-      else if (chatMode == 'global' || chatMode == 'all')
-      {
-        msg = 'Shout ' + msg;
-      }
-      else if (chatMode.startsWith('Game'))
-      {
-        var gameNo = /^(Game\d*)/.exec(chatMode)[1].toString();
-        msg = 'ShoutRoom ' + gameNo + ' ' + msg;
-      }
-      else if (chatMode.startsWith('private-'))
-      {
-        var other = /^private-(.*)/.exec(chatMode)[1].toString();
-        msg = 'Tell ' + other + ' ' + msg;
-      }
-      console.log('Sent to Server: ' + msg);
-      this.send(msg);
-      $('#chat-me').val('');
-  },
   send: function (e) {
       if (this.connection && this.connection.readyState === 1)
           this.connection.send(e + "\n");

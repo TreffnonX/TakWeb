@@ -1,6 +1,7 @@
 var chat_time;
 var chatMode = 'all';
 var lastWhisper = '';
+var lastOutgoingWhisper = '';
 
 /**
  * Handle incoming chat message. If the message is not a chat message, false is returned.
@@ -44,6 +45,116 @@ function handleChatMessage (message)
 }
 
 /**
+ * Dispatch a chat message to the server.
+ */
+function sendChatMessage () {
+  var msg = $('#chat-me').val();
+
+  // redirected chat message.
+  if (msg.startsWith('.'))
+  {
+    // segment message.
+    var match = /^\.(\S*) (.*)/.exec(msg);
+    if (!match) return;
+    var type = match[1];
+    var inner = match[2];
+    var msg = null;
+
+    // go through message assemblers and find the right one.
+    (msg = sendWhisper(type, inner))
+    || (msg = sendRepeatedWhisper(type, inner))
+    || (msg = sendResponse(type, inner))
+    || (msg = sendGlobal(type, inner))
+    || (msg = sendMatch(type, inner))
+    || (msg = sendSpectators(type, inner))
+    || (msg = sendOpponent(type, inner));
+
+    // if the message is faulty or null, abort.
+    if (!msg || msg == 1) return;
+  }
+  else if (chatMode == 'global' || chatMode == 'all')
+  {
+    msg = 'Shout ' + msg;
+  }
+  else if (chatMode.startsWith('Game'))
+  {
+    var gameNo = /^(Game\d*)/.exec(chatMode)[1].toString();
+    msg = 'ShoutRoom ' + gameNo + ' ' + msg;
+  }
+  else if (chatMode.startsWith('private-'))
+  {
+    var other = /^private-(.*)/.exec(chatMode)[1].toString();
+    msg = 'Tell ' + other + ' ' + msg;
+  }
+  console.log('Sent to Server: ' + msg);
+  server.send(msg);
+
+  // clear chat field.
+  $('#chat-me').val('');
+}
+
+/**
+ * Message redirect functions.
+ */
+function sendWhisper(type, inner)
+{
+  if (type != 'w' && type != 'whisper') return null;
+  var match = /^([\w\d]*) (.*)/.exec(inner);
+  if (!match) return 1;
+  toUser = match[1];
+  body = match[2];
+  lastOutgoingWhisper = toUser;
+  return 'Tell ' + toUser + ' ' + body;
+}
+function sendRepeatedWhisper(type, inner)
+{
+  if (type != 'ww') return null;
+  if (!lastOutgoingWhisper) return 1;
+  return 'Tell ' + lastOutgoingWhisper + ' ' + inner;
+}
+function sendResponse(type, inner)
+{
+  if (type != 'r' && type != 'respond') return null;
+  if (!lastWhisper) return 1;
+  lastOutgoingWhisper = lastWhisper;
+  return 'Tell ' + lastWhisper + ' ' + inner;
+}
+function sendGlobal(type, inner)
+{
+  if (type != 'a' && type != 'all' && type != 'g' && type != 'global') return null;
+  return 'Shout ' + inner;
+}
+function sendMatch(type, inner)
+{
+  if (type != 'm' && type != 'match') return null;
+  if (!board.gameno) return 1;
+  if (board.observing)
+  {
+    return 'ShoutRoom Game' + board.gameno + ' ' + inner;
+  }
+  else
+  {
+    var opponent = document.getElementById('player-opp-name').innerHTML;
+    lastOutgoingWhisper = opponent;
+    return 'Tell ' + opponent + ' ' + inner;
+  }
+}
+function sendSpectators(type, inner)
+{
+  if (type != 's' && type != 'spectator' && type != 'spectators') return null;
+  if (!board.gameno || !board.observing) return 1;
+  return 'ShoutRoom Game' + board.gameno + ' ' + inner;
+}
+function sendOpponent(type, inner)
+{
+  if (type != 'o' && type != 'opponent') return null;
+  if (!board.gameno || board.observing) return 1;
+  var opponent = document.getElementById('player-opp-name').innerHTML;
+  lastOutgoingWhisper = opponent;
+  return 'Tell ' + opponent + ' ' + inner;
+}
+
+/**
  * Print received chat messages.
  */
 function printChatMessage (types, user, message)
@@ -73,13 +184,15 @@ function printChatMessage (types, user, message)
   chatMessage.append('<span class="' + clsname + '">' + user + ': </span>');
   chatMessage.append('<span class="time-label-box"><span class="time-label">'
       + getZero(hours) + ':' + getZero(mins) + '</span></span>');
-  var options = {/* ... */};
-  message = message.linkify(options);
 
   // highlight own name.
   message = message.replace(new RegExp('(^|[^\\w\\d])(' + server.myname + ')(?=$|[^\\w\\d])', 'gi'),
       '$1<span class="chatmyname">$2</span>');
   chatMessage.append(message + '<br>');
+
+  // employ linkify to highlight links.
+  var options = {/* ... */};
+  message = message.linkify(options);
 
   // append message to chat.
   var $cs = $('#chat-server');

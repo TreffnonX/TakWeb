@@ -163,6 +163,12 @@ a, a:focus, a:active {
 .game-msg {
   color: #2f8323;
 }
+.gap-filler {
+  display: none;
+}
+.gap-filler:only-child {
+  display: block;
+}
 .optlist a {
   margin-top: 2px;
   margin-bottom: 2px;

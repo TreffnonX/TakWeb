@@ -10,21 +10,61 @@
     <div class="form-group height-full chat-box">
       <div id="chat-tab-container">
         <a href="#" id="all-chat-tab" class="chat-tab selected-chat-tab"
-           style="overflow:hidden;"
-           title="All chat. Displays all received messages. Writing here will write to global chat by default."
+           style="overflow:hidden;" title=
+"All chat.
+Displays all sent and received messages.
+Writing here will write to global chat by default.
+
+Messages can be redirected to any chat:
+  .g, .global, .a, .all &#8594; Global message
+  .m, .match &#8594; Spectator message
+      / Opponent private message
+  .o, .opponent &#8594; Opponent private message
+  .s, .spectator, .spectators &#8594; Spectator message
+  .w name, .whisper name &#8594; Private message to 'name'
+  .r, .respond &#8594; Private message to sender of last
+      received private message
+  .ww &#8594; Private message to the recipient of the last
+      private message sent"
            onclick="chatModeChange(this, 'all');">
           <img class="icon" src="resources/images/icons/ic_all_black_24px.svg"/>
         </a><!--
      --><a href="#" id="global-chat-tab" class="chat-tab"
            style="position:relative;overflow:hidden;"
-           title="Global chat. Messages starting with '.g ', '.global', '.a' or '.all' will be directed here."
+           title=
+"Global chat.
+
+Messages can be redirected to any chat:
+  .g, .global, .a, .all &#8594; Global message
+  .m, .match &#8594; Spectator message
+      / Opponent private message
+  .o, .opponent &#8594; Opponent private message
+  .s, .spectator, .spectators &#8594; Spectator message
+  .w name, .whisper name &#8594; Private message to 'name'
+  .r, .respond &#8594; Private message to sender of last
+      received private message
+  .ww &#8594; Private message to the recipient of the last
+      private message sent"
            onclick="chatModeChange(this, 'global');">
           <img class="icon" src="resources/images/icons/ic_public_black_24px.svg"/>
           <div id="global-badge" class="chat-badge"></div>
         </a><!--
      --><li class="dropdown chat-tab" style="padding:0;">
           <a href="#" id="game-chat-tab" class="dropdown-toggle"
-             role="button" data-toggle="dropdown" title="Game chats. Spectators only."
+             role="button" data-toggle="dropdown" title=
+"Spectator chat rooms.
+
+Messages can be redirected to any chat:
+  .g, .global, .a, .all &#8594; Global message
+  .m, .match &#8594; Spectator message
+      / Opponent private message
+  .o, .opponent &#8594; Opponent private message
+  .s, .spectator, .spectators &#8594; Spectator message
+  .w name, .whisper name &#8594; Private message to 'name'
+  .r, .respond &#8594; Private message to sender of last
+      received private message
+  .ww &#8594; Private message to the recipient of the last
+      private message sent"
              aria-haspopup="true" aria-expanded="false"
              style="display:block;width:100%;padding:4px;overflow:hidden;">
             <img class="icon" src="resources/images/icons/ic_capstone_black_24px.svg"/>
@@ -32,12 +72,25 @@
           </a>
           <ul id="game-chat-list" class="dropdown-menu dropdown-menu-right"
               style="width:180px;transform:translate(45px,0);">
+            <li class="gap-filler">Spectate a game to open a spectator chat.</li>
           </ul>
         </li><!--
      --><li class="dropdown chat-tab" style="border-right-width:0;padding:0;">
           <a href="#" id="private-chat-tab" class="dropdown-toggle"
-             role="button" data-toggle="dropdown"
-             title="Private chats. Messages starting with '.w name ' or '.whisper name ' will be directed here. '.r' or '.respond' will respond to the last private message received."
+             role="button" data-toggle="dropdown" title=
+"Private chat rooms.
+
+Messages can be redirected to any chat:
+  .g, .global, .a, .all &#8594; Global message
+  .m, .match &#8594; Spectator message
+      / Opponent private message
+  .o, .opponent &#8594; Opponent private message
+  .s, .spectator, .spectators &#8594; Spectator message
+  .w name, .whisper name &#8594; Private message to 'name'
+  .r, .respond &#8594; Private message to sender of last
+      received private message
+  .ww &#8594; Private message to the recipient of the last
+      private message sent"
              aria-haspopup="true" aria-expanded="false"
              style="display:block;width:100%;padding:4px;overflow:hidden;">
             <img class="icon" src="resources/images/icons/ic_person_black_24px.svg"/>
@@ -45,12 +98,13 @@
           </a>
           <ul id="private-chat-list" class="dropdown-menu dropdown-menu-right"
               style="width:180px;transform:translate(5px;0);">
+            <li class="gap-filler">Write or receive a private message to or from someone to open a private chat.</li>
           </ul>
         </li>
       </div>
       <div id="chat-server"></div>
     </div>
-    <form role="form" onsubmit="server.chat(); return false;" class="height-auto" style="margin-top: 4px;"
+    <form role="form" onsubmit="sendChatMessage(); return false;" class="height-auto" style="margin-top: 4px;"
           autocomplete="off">
       <input type="text" class="form-control" id="chat-me"/>
       <button id="send-button" type="submit" style="margin-top: 4px;" class="btn btn-primary">
