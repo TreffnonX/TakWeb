@@ -185,19 +185,29 @@ function printChatMessage (types, user, message)
   chatMessage.append('<span class="time-label-box"><span class="time-label">'
       + getZero(hours) + ':' + getZero(mins) + '</span></span>');
 
-  // highlight own name.
-  message = message.replace(new RegExp('(^|[^\\w\\d])(' + server.myname + ')(?=$|[^\\w\\d])', 'gi'),
-      '$1<span class="chatmyname">$2</span>');
-  chatMessage.append(message + '<br>');
-
   // employ linkify to highlight links.
   var options = {/* ... */};
   message = message.linkify(options);
 
+  // highlight own name.
+  message = ' ' + message + ' ';
+  message = message.replace(new RegExp('((?:[^\\w\\d\\<\\>]|(?:\\<[^\\>]*\\>))*)('
+      + server.myname + ')(?=[^\\w\\d])', 'gi'),
+      '$1<span class="chatmyname">$2</span>');
+
+  console.log(message);
+
+  chatMessage.append(message + '<br>');
+
   // append message to chat.
   var $cs = $('#chat-server');
+  var scrolledDown = ($cs[0].scrollHeight - $cs[0].scrollTop - $cs.innerHeight()) == 0;
+  console.log($cs[0].scrollHeight + ' ' + $cs[0].scrollTop + ' ' + $cs.innerHeight());
   $cs.append(chatMessage);
-  $cs.scrollTop($cs[0].scrollHeight);
+  if (scrolledDown)
+  {
+    $cs.scrollTop($cs[0].scrollHeight);
+  }
 
   // attach context menu to player names.
   var playerName = chatMessage.children()[1];
