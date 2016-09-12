@@ -32,7 +32,8 @@ function init()
   renderer = new THREE.WebGLRenderer({canvas: canvas,
       antialias: antialiasing_mode});
   renderer.setPixelRatio(window.devicePixelRatio);
-  renderer.setClearColor(0x111111, 1);
+  var preset = tss['preset_' + tss.active];
+  renderer.setClearColor(parseInt(preset.background, 16), 1);
 
   document.body.appendChild(renderer.domElement);
 

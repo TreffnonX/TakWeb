@@ -86,11 +86,35 @@ function sendChatMessage () {
     var other = /^private-(.*)/.exec(chatMode)[1].toString();
     msg = 'Tell ' + other + ' ' + msg;
   }
+
+  // translate unicode character sequence into actual character.
+  msg = insertAllUnicode(msg);
+
+  // transmit.
   console.log('Sent to Server: ' + msg);
   server.send(msg);
 
   // clear chat field.
   $('#chat-me').val('');
+}
+
+/**
+ * Replace all html decimal entity sequenced with the actual characters.
+ */
+function insertAllUnicode(string)
+{
+  var match;
+  while (match = /&#(\d{1,5});/.exec(string))
+  {
+    var character = String.fromCharCode(parseInt(match[1]));
+    string = string.replace(new RegExp(match[0], 'g'), character);
+  }
+  while (match = /\\u([\da-fA-F]{4})/.exec(string))
+  {
+    var character = String.fromCharCode(parseInt(match[1], 16));
+    string = string.replace(new RegExp('\\\\u' + match[1], 'g'), character);
+  }
+  return string;
 }
 
 /**
@@ -191,18 +215,14 @@ function printChatMessage (types, user, message)
 
   // highlight own name.
   message = ' ' + message + ' ';
-  message = message.replace(new RegExp('((?:[^\\w\\d\\<\\>]|(?:\\<[^\\>]*\\>))*)('
-      + server.myname + ')(?=[^\\w\\d])', 'gi'),
+  message = message.replace(new RegExp('((?:[^\\w\\d\\<\\>]|(?:\\<[^\\>\\<]*\\>)))('
+      + server.myname + ')(?=$|[^\\w\\d])', 'gi'),
       '$1<span class="chatmyname">$2</span>');
-
-  console.log(message);
-
   chatMessage.append(message + '<br>');
 
   // append message to chat.
   var $cs = $('#chat-server');
   var scrolledDown = ($cs[0].scrollHeight - $cs[0].scrollTop - $cs.innerHeight()) == 0;
-  console.log($cs[0].scrollHeight + ' ' + $cs[0].scrollTop + ' ' + $cs.innerHeight());
   $cs.append(chatMessage);
   if (scrolledDown)
   {

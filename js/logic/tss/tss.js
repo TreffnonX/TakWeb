@@ -283,6 +283,12 @@ function objectifyTSSNode(rawNode, definitionNode)
           throw 'Unable to objectify TSS tree. Expected floating point value between 0 and 1. found: ' + value;
         }
         break;
+      case 'col':
+        if (!/^[\da-f]{6}$/.exec(value))
+        {
+          throw 'Unable to objectify TSS tree. Expected color value (6 hexadecimal characters). found: ' + value;
+        }
+        break;
       default:
         throw 'Unable to objectify TSS tree. Valid data type definition expected. found: ' + definitionNode.data;
     }

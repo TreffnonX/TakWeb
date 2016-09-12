@@ -374,6 +374,10 @@ var board = {
       }
     },
     updateboard: function () {
+        // refresh clear color.
+        var preset = tss['preset_' + tss.active];
+        renderer.setClearColor(parseInt(preset.background, 16), 1);
+
         // reload textures.
         var white_texture = new THREE.TextureLoader().load(white_square_tex_name);
         var black_texture = new THREE.TextureLoader().load(black_square_tex_name);

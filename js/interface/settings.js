@@ -151,6 +151,7 @@ function textFieldTSS() {
   var tssTree = objectifyTSSTree(parsedTSS, tssDefinition);
   tss = mergeTSSTrees(tss, tssTree);
   localStorage.setItem('tss', encodeURI(toString(tss, 'tss')));
+  board.updateboard();
   board.updatepieces();
 }
 
