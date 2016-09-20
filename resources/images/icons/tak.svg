@@ -1,0 +1,8 @@
+<svg height="16" viewBox="0 0 16 16" width="16" xmlns="http://www.w3.org/2000/svg">
+  <path d="M0 0h16v16H0z" fill="none"/>
+  <circle r="7.25" cx="8" cy="8" fill="#444" stroke-width="1.5" stroke-location="outside" stroke="#fff"/>
+  <clipPath id="g-clip">
+	<circle r="5.5" cx="8" cy="8" stroke-width="0"/>
+  </clipPath>
+  <path d="M0 7L8 12L16 7L16 1L8 6L0 1z" fill="#fff" clip-path="url(#g-clip)" />
+</svg>

@@ -148,7 +148,7 @@ var server = {
 
           $('.player1-name:first').html(spl[4]);
           $('.player2-name:first').html(spl[6]);
-          document.title = "Tak: " + spl[4] + " vs " + spl[6];
+          document.title = "Tak\u00a0\u00a0" + spl[4] + " vs " + spl[6];
 
           var time = Number(spl[8]);
           var m = parseInt(time/60);
@@ -168,7 +168,7 @@ var server = {
           board.gameno = gameno;
           $('.player1-name:first').html(spl[2]);
           $('.player2-name:first').html(spl[4].split(",")[0]);
-          document.title = "Tak: " + spl[2] + " vs " + spl[4];
+          document.title = "Tak\u00a0\u00a0" + spl[2] + " vs " + spl[4].split(",")[0];
 
           var time = Number(spl[6].split(",")[0]);
           var m = parseInt(time/60);

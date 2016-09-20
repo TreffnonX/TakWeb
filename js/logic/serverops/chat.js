@@ -2,6 +2,7 @@ var chat_time;
 var chatMode = 'all';
 var lastWhisper = '';
 var lastOutgoingWhisper = '';
+var chatLock = '';
 
 /**
  * Handle incoming chat message. If the message is not a chat message, false is returned.
@@ -51,14 +52,21 @@ function sendChatMessage () {
   var msg = $('#chat-me').val();
 
   // redirected chat message.
-  if (msg.startsWith('.'))
+  if (msg.startsWith('.') || msg.startsWith('/'))
   {
     // segment message.
-    var match = /^\.(\S*) (.*)/.exec(msg);
+    var match = /^([./])(\S*) (.*)/.exec(msg);
     if (!match) return;
-    var type = match[1];
-    var inner = match[2];
+    var lock = match[1];
+    var type = match[2];
+    var inner = match[3];
     var msg = null;
+
+    // if lock is set, lock in chat.
+    if (lock == '/')
+    {
+      chatLock = '/' + type + (type == 'w' ? ' ' + /\S*/.exec(inner) : '') + ' ';
+    }
 
     // go through message assemblers and find the right one.
     (msg = sendWhisper(type, inner))
@@ -95,7 +103,7 @@ function sendChatMessage () {
   server.send(msg);
 
   // clear chat field.
-  $('#chat-me').val('');
+  $('#chat-me').val(lock == '/' ? chatLock : '');
 }
 
 /**
