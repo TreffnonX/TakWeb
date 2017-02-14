@@ -128,6 +128,18 @@ function onDocumentMouseMove(e)
   board.mousemove();
 }
 
+
+function onDocumentTouchStart(e)
+{
+  board.onDocumentMouseDown(e);
+}
+
+function onDocumentTouchEnd(e)
+{
+  board.onDocumentMouseUp(e);
+}
+
+
 function onDocumentMouseDown(e)
 {
   e.preventDefault();
