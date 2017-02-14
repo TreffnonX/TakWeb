@@ -458,6 +458,7 @@ input[type=range]::-webkit-slider-runnable-track {
 .selectplayer {
   border-color: #444 !important;
   background-color: #e1c99a;
+  min-width: 50%;
 }
 .notification-icon {
   width: 25px;

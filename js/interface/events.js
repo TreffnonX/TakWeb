@@ -28,9 +28,12 @@ function init()
   camera.position.set(0, canvas.width / 2, canvas.height / 2);
 
   scene = new THREE.Scene();
+  scene.add(camera);
 
+  console.log(antialiasing_mode === true ? "antialiasing: true" : "antialiasing: false");
   renderer = new THREE.WebGLRenderer({canvas: canvas,
       antialias: antialiasing_mode});
+  //renderer.setPixelRatio(2);
   renderer.setPixelRatio(window.devicePixelRatio);
   var preset = tss['preset_' + tss.active];
   renderer.setClearColor(parseInt(preset.background, 16), 1);
@@ -40,7 +43,7 @@ function init()
   window.addEventListener('resize', onWindowResize, false);
   controls = new THREE.OrbitControls(camera, renderer.domElement);
   controls.minDistance = 200;
-  controls.maxDistance = 1500;
+  controls.maxDistance = 1300;
   controls.enableKeys = false;
   var ua = navigator.userAgent.toLowerCase();
   if (ua.indexOf("android") > -1 || ua.indexOf("iphone") > -1 ||
@@ -75,6 +78,8 @@ function init()
     showrmenu();
   }
 
+  onWindowResize();
+
   $('#chat').offset({ top: $('nav').height() + 5 });
   $('#chat-toggle-button').offset({ top: $('nav').height() + 5 });
 
@@ -90,7 +95,6 @@ function onWindowResize()
   canvas.height = window.innerHeight;
 
   renderer.setSize(canvas.width, canvas.height);
-
   camera.aspect = canvas.width / canvas.height;
   camera.updateProjectionMatrix();
 
